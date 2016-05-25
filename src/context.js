@@ -4,7 +4,7 @@ module.exports = {
     publishToExchange
 };
 
-var rabbitMq = require('./event-bus/rabbitmq');
+var rabbitmq = require('./event-bus/rabbitmq');
 var log = require('winston');
 var moment = require('moment');
 var metrics = require('./metrics');
@@ -14,7 +14,7 @@ var correlationStore = {};
 
 
 function init( config ){
-    rabbitMq.init(config.rabbitMq);
+    rabbitmq.init(config.rabbitmq);
 
     return module.exports;
 }
