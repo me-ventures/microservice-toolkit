@@ -35,11 +35,11 @@ function consume(exchangeName, topics, handler) {
         chain(message, handler)
     };
 
-    rabbitMq.connectExchange(exchangeName, topics, messageHandler)
+    rabbitmq.connectExchange(exchangeName, topics, messageHandler)
 }
 
 function publishToExchange(exchange, key, message) {
-    rabbitMq.publishToExchange(exchange, key, message)
+    rabbitmq.publishToExchange(exchange, key, message)
 }
 
 function chain(message, next) {
@@ -47,7 +47,7 @@ function chain(message, next) {
         .then(checkCorrelationId)
         .then(next)
         .then(msg => timeRequest(msg))
-        .then(_ => rabbitMq.acknowledge(message))
+        .then(_ => rabbitmq.acknowledge(message))
         .catch(log.error)
 }
 
