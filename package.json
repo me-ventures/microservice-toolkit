@@ -1,0 +1,29 @@
+{
+  "name": "microservice-toolkit",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvaLok/microservice-toolkit.git"
+  },
+  "author": "MEV",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EvaLok/microservice-toolkit/issues"
+  },
+  "homepage": "https://github.com/EvaLok/microservice-toolkit#readme",
+  "dependencies": {
+    "amqplib": "^0.4.1",
+    "config": "^1.20.1",
+    "express": "^4.13.4",
+    "lynx": "^0.2.0",
+    "moment": "^2.13.0",
+    "morgan": "^1.7.0",
+    "node-uuid": "^1.4.7",
+    "winston": "^2.2.0"
+  }
+}
