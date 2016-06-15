@@ -39,10 +39,14 @@ function consume(exchangeName, topics, handler) {
 }
 
 function publishToExchange(exchange, key, message) {
+    metrics.increment("message-sent");
+
     rabbitmq.publishToExchange(exchange, key, message)
 }
 
 function chain(message, next) {
+    metrics.increment("message-received");
+
     jsonDecoder(message)
         .then(checkCorrelationId)
         .then(next)
