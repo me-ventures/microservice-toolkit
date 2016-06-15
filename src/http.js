@@ -28,7 +28,6 @@ function addMiddleware( middleware ){
     app.use(middleware);
 }
 
-
 function logResponseCode(req, res, next) {
     var rEnd = res.end;
 
