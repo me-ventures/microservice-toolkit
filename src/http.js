@@ -1,6 +1,7 @@
 module.exports = {
     listen: listen,
-    addRouter: addRouter
+    addRouter: addRouter,
+    addMiddleware: addMiddleware
 };
 
 
@@ -21,6 +22,10 @@ function listen( port ){
 
 function addRouter( endpointName, route ){
     app.use(endpointName, route);
+}
+
+function addMiddleware( middleware ){
+    app.use(middleware);
 }
 
 
