@@ -22,10 +22,14 @@ function gauge(name, value) {
 }
 
 function timing(name, value) {
-    metrics.timing(metricPrefix + name, value)
+    if(metrics !== undefined) {
+        metrics.timing(metricPrefix + name, value)
+    }
 }
 
 function increment(name) {
-    metrics.increment(metricPrefix + name)
+    if(metrics !== undefined) {
+        metrics.increment(metricPrefix + name)
+    }
 }
 

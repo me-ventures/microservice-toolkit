@@ -1,6 +1,7 @@
 module.exports = {
     init: init,
     connectExchange: connectExchange,
+    connectExchangeSharedQueue: connectExchangeSharedQueue,
     publishToExchange: publishToExchange,
     acknowledge: acknowledge
 };
@@ -37,6 +38,37 @@ function connectExchange(name, topics, handler) {
             chan.assertExchange(name, 'direct', {durable: true});
 
             return chan.assertQueue('', {exclusive: true})
+                .then(q => {
+                    return {
+                        channel: chan,
+                        queue: q
+                    };
+                });
+        })
+        .then(object => {
+            topics.forEach(routingKey => {
+                object.channel.bindQueue(object.queue.queue, name, routingKey)
+            });
+
+            object.channel.consume(object.queue.queue, handler)
+        })
+        .catch(x => {
+            log.error(x)
+        } )
+}
+
+function connectExchangeSharedQueue(name, topics, queueName, handler) {
+
+    if(Array.isArray(topics) === false) {
+        throw { message: "Topics should be array."}
+    }
+
+    channel
+        .then(chan => {
+            chan.assertExchange(name, 'direct', {durable: true});
+            chan.prefetch(1);
+
+            return chan.assertQueue(queueName, {durable: true})
                 .then(q => {
                     return {
                         channel: chan,

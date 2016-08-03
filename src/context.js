@@ -1,6 +1,7 @@
 module.exports = {
     init: init,
     consume: consume,
+    consumeShared: consumeShared,
     publishToExchange
 };
 
@@ -36,6 +37,26 @@ function consume(exchangeName, topics, handler) {
     };
 
     rabbitmq.connectExchange(exchangeName, topics, messageHandler)
+}
+
+/**
+ * Create a consume function for an exchange using a shared queue. This queue can be used by other workers and the messages
+ * will be shared round-robin.
+ *
+ * Handler should return a promise and accept a message. If this is reject promise the message is not acknowledged. If
+ * the resolves it should contain the original message.
+ *
+ * @param exchangeName
+ * @param topics
+ * @param queueName
+ * @param handler
+ */
+function consumeShared(exchangeName, topics, queueName, handler) {
+    var messageHandler = function(message) {
+        chain(message, handler)
+    };
+
+    rabbitmq.connectExchangeSharedQueue(exchangeName, topics, queueName, messageHandler)
 }
 
 function publishToExchange(exchange, key, message) {
