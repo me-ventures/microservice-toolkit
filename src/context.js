@@ -10,6 +10,8 @@ var log = require('winston');
 var moment = require('moment');
 var metrics = require('./metrics');
 var uuid = require('node-uuid');
+var statusProvider = require('./status').getProvider();
+
 
 var correlationStore = {};
 
@@ -37,6 +39,11 @@ function consume(exchangeName, topics, handler) {
     };
 
     rabbitmq.connectExchange(exchangeName, topics, messageHandler)
+
+    // add consume events to status provider
+    topics.forEach(function(topic){
+        statusProvider.addEventConsume(exchangeName, topic, false);
+    });
 }
 
 /**
@@ -57,12 +64,20 @@ function consumeShared(exchangeName, topics, queueName, handler) {
     };
 
     rabbitmq.connectExchangeSharedQueue(exchangeName, topics, queueName, messageHandler)
+
+    // add consume events to status provider
+    topics.forEach(function(topic){
+        statusProvider.addEventConsume(exchangeName, topic, true, queueName);
+    });
 }
 
 function publishToExchange(exchange, key, message) {
     metrics.increment("message-sent");
 
     rabbitmq.publishToExchange(exchange, key, message)
+
+    // add publish event to status provider
+    statusProvider.addEventPublish(exchange, key);
 }
 
 function chain(message, next) {
