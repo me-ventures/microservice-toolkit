@@ -1,6 +1,7 @@
 module.exports = {
     init: init,
-    shutdown: shutdown
+    shutdown: shutdown,
+    getProvider: getProvider
 };
 
 var express = require('express');
@@ -8,14 +9,21 @@ var app = express();
 var log = require('winston');
 var httpEndpoint;
 
-var info = {};
+var provider = require('./provider');
+
+function getProvider(){
+    return provider;
+}
 
 function init( config ){
-    config = config || {
-        port: 11111
-    };
+    config = config || {};
+    config.port = config.port || 11111;
 
-    info.service = config.service;
+    if( typeof config.service !== 'object' || ! config.service.name ){
+        throw new Error("service.name must be set");
+    }
+
+    provider.setServiceInformation(config.service.name);
 
     initHttpEndpoint(config);
 }
