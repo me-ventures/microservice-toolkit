@@ -5,7 +5,8 @@ module.exports = {
     init: init,
     http: require('./src/http'),
     metrics: require('./src/metrics'),
-    context: require('./src/context')
+    context: require('./src/context'),
+    status: require('./src/status')
 };
 
 /**
