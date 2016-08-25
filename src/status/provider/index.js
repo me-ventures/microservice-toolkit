@@ -4,7 +4,8 @@ module.exports = {
     addEventConsumeExample: addEventConsumeExample,
     addEventPublish: addEventPublish,
     addEventPublishExample: addEventPublishExample,
-    getData: getData
+    getData: getData,
+    reset: reset
 };
 
 
@@ -18,8 +19,24 @@ var data = {
     }
 };
 
+var publishKeyLookup = {};
+
 function getData(){
     return data;
+}
+
+function reset(){
+    data = {
+        service: {
+            name: 'test-service'
+        },
+        events: {
+            consume: [],
+            publish: []
+        }
+    };
+
+    publishKeyLookup = {};
 }
 
 function setServiceInformation( name ){
@@ -43,13 +60,17 @@ function addEventConsumeExample( namespace, topic, queueName ){
 }
 
 function addEventPublish( namespace, topic, schema ){
-    var event = {
-        namespace: namespace,
-        topic: topic,
-        schema: schema || ''
-    };
+    if( ! publishKeyLookup[namespace + topic] ){
+        var event = {
+            namespace: namespace,
+            topic: topic,
+            schema: schema || ''
+        };
 
-    data.events.publish.push(event);
+        data.events.publish.push(event);
+
+        publishKeyLookup[namespace + topic] = true;
+    }
 }
 
 function addEventPublishExample( namespace, topic ){

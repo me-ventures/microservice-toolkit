@@ -14,6 +14,7 @@ describe('routes', function(){
 
     afterEach(function(){
         this.sandbox.sut.shutdown();
+        this.sandbox.provider.reset();
         this.sandbox.restore();
     });
 
@@ -110,6 +111,45 @@ describe('routes', function(){
                                 schema: ''
                             }
                         ],
+                        publish: [
+                            {
+                                namespace: 'test-ns-2',
+                                topic: 'test-event-2',
+                                schema: ''
+                            }
+                        ]
+                    }
+                });
+
+                done();
+            });
+        });
+
+        it('should not add same namespace/topic publish event more than once', function(done){
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            });
+
+            for( var i = 0; i < 10; i++ ){
+                this.sandbox.provider.addEventPublish(
+                    'test-ns-2',
+                    'test-event-2'
+                );
+            }
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    events: {
+                        consume: [],
                         publish: [
                             {
                                 namespace: 'test-ns-2',
