@@ -1,25 +1,32 @@
 module.exports = {
-    init: init
+    init: init,
+    shutdown: shutdown
 };
 
 var express = require('express');
 var app = express();
 var log = require('winston');
+var httpEndpoint;
 
+var info = {};
 
 function init( config ){
     config = config || {
         port: 11111
     };
 
-    initHttpEndpoint(config);
+    info.service = config.service;
 
+    initHttpEndpoint(config);
+}
+
+function shutdown(){
+    httpEndpoint.close();
 }
 
 function initHttpEndpoint( config ){
-    app.listen(config.port);
+    httpEndpoint = app.listen(config.port);
     app.use('/', require('./routes'));
-
 }
 
 

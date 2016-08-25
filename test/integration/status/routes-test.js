@@ -9,9 +9,11 @@ describe('routes', function(){
     beforeEach(function(){
         this.sandbox = sinon.sandbox.create();
         this.sandbox.sut = require('../../../src/status');
+        this.sandbox.provider = require('../../../src/status/provider');
     });
 
     afterEach(function(){
+        this.sandbox.sut.shutdown();
         this.sandbox.restore();
     });
 
@@ -33,6 +35,76 @@ describe('routes', function(){
 
             request.get('http://localhost:12345/status', function(err, res){
                 assert.equal(res.statusCode, 200);
+
+                done();
+            });
+        });
+
+        it('should show service information', function(done){
+            this.sandbox.sut.init();
+            this.sandbox.provider.setServiceInformation('test-service');
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    events: {
+                        consume: [],
+                        publish: []
+                    }
+                });
+
+                done();
+            });
+        });
+
+        it('should show added events', function(done){
+            this.sandbox.sut.init();
+            this.sandbox.provider.setServiceInformation('test-service');
+            this.sandbox.provider.addEventConsume(
+                'test-ns-1',
+                'test-event-1',
+                true,
+                'test-queue-name.test-event1'
+            );
+            this.sandbox.provider.addEventPublish(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    events: {
+                        consume: [
+                            {
+                                namespace: 'test-ns-1',
+                                topic: 'test-event-1',
+                                shared: true,
+                                queueName: 'test-queue-name.test-event1',
+                                schema: ''
+                            }
+                        ],
+                        publish: [
+                            {
+                                namespace: 'test-ns-2',
+                                topic: 'test-event-2',
+                                schema: ''
+                            }
+                        ]
+                    }
+                });
 
                 done();
             });
