@@ -35,6 +35,9 @@ function init( config ){
 function consume(exchangeName, topics, handler) {
     // Setup chain
     var messageHandler = function(message) {
+        // make sure we don't have things like buffers
+        message = JSON.parse(message.content.toString());
+
         topics.forEach(function(topic){
             statusProvider.setEventConsumeExample(exchangeName, topic, message);
         });
@@ -64,6 +67,9 @@ function consume(exchangeName, topics, handler) {
  */
 function consumeShared(exchangeName, topics, queueName, handler) {
     var messageHandler = function(message) {
+        // make sure we don't have things like buffers
+        message = JSON.parse(message.content.toString());
+
         topics.forEach(function(topic){
             statusProvider.setEventConsumeExample(exchangeName, topic, message);
         });
@@ -92,23 +98,11 @@ function publishToExchange(exchange, key, message) {
 function chain(message, next) {
     metrics.increment("message-received");
 
-    jsonDecoder(message)
-        .then(checkCorrelationId)
+    Promise.resolve(checkCorrelationId(message))
         .then(next)
         .then(msg => timeRequest(msg))
         .then(_ => rabbitmq.acknowledge(message))
         .catch(log.error)
-}
-
-function jsonDecoder(message) {
-    return new Promise((resolve, reject) => {
-        try {
-            return resolve(JSON.parse(message.content.toString()))
-        }
-        catch (e) {
-            return reject(e)
-        }
-    })
 }
 
 function checkCorrelationId(message) {
