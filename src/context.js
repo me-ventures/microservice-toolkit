@@ -36,10 +36,14 @@ function consume(exchangeName, topics, handler) {
     // Setup chain
     var messageHandler = function(message) {
         // make sure we don't have things like buffers
-        message = JSON.parse(message.content.toString());
+        message.content = JSON.parse(message.content.toString());
 
         topics.forEach(function(topic){
-            statusProvider.setEventConsumeExample(exchangeName, topic, message);
+            statusProvider.setEventConsumeExample(
+                exchangeName,
+                topic,
+                message.content
+            );
         });
 
         chain(message, handler)
@@ -68,10 +72,14 @@ function consume(exchangeName, topics, handler) {
 function consumeShared(exchangeName, topics, queueName, handler) {
     var messageHandler = function(message) {
         // make sure we don't have things like buffers
-        message = JSON.parse(message.content.toString());
+        message.content = JSON.parse(message.content.toString());
 
         topics.forEach(function(topic){
-            statusProvider.setEventConsumeExample(exchangeName, topic, message);
+            statusProvider.setEventConsumeExample(
+                exchangeName,
+                topic,
+                message.content
+            );
         });
 
         chain(message, handler)
@@ -98,7 +106,7 @@ function publishToExchange(exchange, key, message) {
 function chain(message, next) {
     metrics.increment("message-received");
 
-    Promise.resolve(checkCorrelationId(message))
+    Promise.resolve(checkCorrelationId(message.content))
         .then(next)
         .then(msg => timeRequest(msg))
         .then(_ => rabbitmq.acknowledge(message))
