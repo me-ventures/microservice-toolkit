@@ -1,9 +1,9 @@
 module.exports = {
     setServiceInformation: setServiceInformation,
     addEventConsume: addEventConsume,
-    addEventConsumeExample: addEventConsumeExample,
+    setEventConsumeExample: setEventConsumeExample,
     addEventPublish: addEventPublish,
-    addEventPublishExample: addEventPublishExample,
+    setEventPublishExample: setEventPublishExample,
     getData: getData,
     reset: reset
 };
@@ -20,6 +20,8 @@ var data = {
 };
 
 var publishKeyLookup = {};
+var publishExampleKeyLookup = {};
+var consumeExampleKeyLookup = {};
 
 function getData(){
     return data;
@@ -37,6 +39,8 @@ function reset(){
     };
 
     publishKeyLookup = {};
+    publishExampleKeyLookup = {};
+    consumeExampleKeyLookup = {};
 }
 
 function setServiceInformation( name ){
@@ -53,10 +57,26 @@ function addEventConsume( namespace, topic, shared, queueName, schema ){
     };
 
     data.events.consume.push(event);
+
+    consumeExampleKeyLookup[namespace + topic] = {
+        exampleAdded: false,
+        idx: data.events.consume.length - 1
+    };
 }
 
-function addEventConsumeExample( namespace, topic, queueName ){
-    // @todo
+function setEventConsumeExample( namespace, topic, example ){
+    var key = namespace + topic;
+
+    if( typeof consumeExampleKeyLookup[key] !== 'object' ){
+        throw new Error(
+            "unknown key: " + key
+        );
+    } else if( ! consumeExampleKeyLookup[key].exampleAdded ) {
+
+        data.events.consume[consumeExampleKeyLookup[key].idx].example = example;
+
+        consumeExampleKeyLookup[key].exampleAdded = true;
+    }
 }
 
 function addEventPublish( namespace, topic, schema ){
@@ -70,9 +90,25 @@ function addEventPublish( namespace, topic, schema ){
         data.events.publish.push(event);
 
         publishKeyLookup[namespace + topic] = true;
+
+        publishExampleKeyLookup[namespace + topic] = {
+            exampleAdded: false,
+            idx: data.events.publish.length - 1
+        };
     }
 }
 
-function addEventPublishExample( namespace, topic ){
-    // @todo
+function setEventPublishExample( namespace, topic, example ){
+    var key = namespace + topic;
+
+    if( typeof publishExampleKeyLookup[key] !== 'object' ){
+        throw new Error(
+            "unknown key: " + key
+        );
+    } else if( ! publishExampleKeyLookup[key].exampleAdded ) {
+
+        data.events.publish[publishExampleKeyLookup[key].idx].example = example;
+
+        publishExampleKeyLookup[key].exampleAdded = true;
+    }
 }

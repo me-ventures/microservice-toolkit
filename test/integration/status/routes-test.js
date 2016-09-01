@@ -125,6 +125,185 @@ describe('routes', function(){
             });
         });
 
+        it('should add examples for present events once (publish)', function(done){
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            });
+            this.sandbox.provider.addEventPublish(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            for( var i = 0; i < 10; i ++ ){
+                this.sandbox.provider.setEventPublishExample(
+                    'test-ns-2',
+                    'test-event-2',
+                    {
+                        hello: 'world',
+                        this_is: {
+                            some: 'data ' + i
+                        }
+                    }
+                );
+            }
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    events: {
+                        consume: [],
+                        publish: [
+                            {
+                                namespace: 'test-ns-2',
+                                topic: 'test-event-2',
+                                schema: '',
+                                example: {
+                                    hello: 'world',
+                                    this_is: {
+                                        some: 'data 0'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                });
+
+                done();
+            });
+        });
+
+        it('should throw error for not present events (publish)', function(done){
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            });
+            this.sandbox.provider.addEventPublish(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            var self = this;
+            var fn = function(){
+                self.sandbox.provider.setEventPublishExample(
+                    'test-ns-2123123213',
+                    'test-event-2',
+                    {
+                        hello: 'world',
+                        this_is: {
+                            some: 'data'
+                        }
+                    }
+                );
+            };
+
+            assert.throws(
+                fn,
+                Error,
+                "unknown key: test-ns-2123123213test-event-2"
+            );
+
+            done();
+        });
+
+        it('should add examples for present events (consume)', function(done){
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            });
+            this.sandbox.provider.addEventConsume(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            this.sandbox.provider.setEventConsumeExample(
+                'test-ns-2',
+                'test-event-2',
+                {
+                    hello: 'world',
+                    this_is: {
+                        some: 'consume data'
+                    }
+                }
+            );
+
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    events: {
+                        consume: [
+                            {
+                                namespace: 'test-ns-2',
+                                topic: 'test-event-2',
+                                schema: '',
+                                queueName: '',
+                                shared: false,
+                                example: {
+                                    hello: 'world',
+                                    this_is: {
+                                        some: 'consume data'
+                                    }
+                                }
+                            }
+                        ],
+                        publish: []
+                    }
+                });
+
+                done();
+            });
+        });
+
+        it('should throw error for not present events (consume)', function(done){
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            });
+            this.sandbox.provider.addEventConsume(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            var self = this;
+            var fn = function(){
+                self.sandbox.provider.setEventConsumeExample(
+                    'test-ns-2123123213',
+                    'test-event-2',
+                    {
+                        hello: 'world',
+                        this_is: {
+                            some: 'data'
+                        }
+                    }
+                );
+            };
+
+            assert.throws(
+                fn,
+                Error,
+                "unknown key: test-ns-2123123213test-event-2"
+            );
+
+            done();
+        });
+
         it('should not add same namespace/topic publish event more than once', function(done){
             this.sandbox.sut.init({
                 service: {
