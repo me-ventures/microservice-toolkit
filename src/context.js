@@ -35,10 +35,14 @@ function init( config ){
 function consume(exchangeName, topics, handler) {
     // Setup chain
     var messageHandler = function(message) {
+        topics.forEach(function(topic){
+            statusProvider.setEventConsumeExample(exchangeName, topic, message);
+        });
+
         chain(message, handler)
     };
 
-    rabbitmq.connectExchange(exchangeName, topics, messageHandler)
+    rabbitmq.connectExchange(exchangeName, topics, messageHandler);
 
     // add consume events to status provider
     topics.forEach(function(topic){
@@ -60,6 +64,10 @@ function consume(exchangeName, topics, handler) {
  */
 function consumeShared(exchangeName, topics, queueName, handler) {
     var messageHandler = function(message) {
+        topics.forEach(function(topic){
+            statusProvider.setEventConsumeExample(exchangeName, topic, message);
+        });
+
         chain(message, handler)
     };
 
@@ -78,6 +86,7 @@ function publishToExchange(exchange, key, message) {
 
     // add publish event to status provider
     statusProvider.addEventPublish(exchange, key);
+    statusProvider.setEventPublishExample(exchange, key, message);
 }
 
 function chain(message, next) {
