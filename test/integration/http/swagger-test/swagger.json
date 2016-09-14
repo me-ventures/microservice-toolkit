@@ -1,0 +1,86 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Move your app forward with the Uber API",
+    "version": "1.0.0",
+    "title": "Uber API"
+  },
+  "host": "api.uber.com",
+  "basePath": "/v1",
+  "schemes": [
+    "http"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/me": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "User Profile",
+        "description": "The User Profile endpoint returns information about the Uber user that has authorized with the application.",
+        "operationId": "meGET",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Profile information for a user",
+            "schema": {
+              "$ref": "#/definitions/Profile"
+            }
+          },
+          "default": {
+            "description": "Unexpected error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "x-swagger-router-controller": "User"
+      }
+    }
+  },
+  "definitions": {
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "description": "First name of the Uber user."
+        },
+        "last_name": {
+          "type": "string",
+          "description": "Last name of the Uber user."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the Uber user"
+        },
+        "picture": {
+          "type": "string",
+          "description": "Image URL of the Uber user."
+        },
+        "promo_code": {
+          "type": "string",
+          "description": "Promo code of the Uber user."
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
