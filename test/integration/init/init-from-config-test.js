@@ -43,5 +43,31 @@ describe('toolkit.initFromConfig', function(){
             done();
         });
     });
+
+    it('should initialize swagger when present in config', function(done){
+        this.timeout = 10000;
+
+        sut.initFromConfig({
+            "name": "public-product-frontend-layer",
+            "http": {
+                "port": 9000
+            },
+            "swagger": {
+                docPath: __dirname + '/../http/swagger-test/swagger.json',
+                swaggerUi: '/swagger.json',
+                controllers: __dirname + '/../http/swagger-test',
+                useStubs: false
+            }
+        });
+
+        request('http://localhost:9000/v1/me', function(err, res, body){
+            body = JSON.parse(body);
+
+            assert.equal(res.statusCode, 200);
+            assert.equal(body.hello, 'world');
+
+            done();
+        });
+    });
 });
 

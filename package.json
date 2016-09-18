@@ -1,6 +1,6 @@
 {
   "name": "microservice-toolkit",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "config": "^1.20.1",
     "express": "^4.13.4",
     "is-my-json-valid": "^2.13.1",
+    "js-yaml": "^3.6.1",
     "lynx": "^0.2.0",
     "moment": "^2.13.0",
     "morgan": "^1.7.0",

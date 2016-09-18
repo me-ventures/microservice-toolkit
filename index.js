@@ -10,6 +10,10 @@ module.exports = {
     status: require('./src/status')
 };
 
+var fs = require('fs');
+var path = require('path');
+var jsyaml = require('js-yaml');
+
 /**
  *
  * @param config
@@ -43,6 +47,31 @@ function initFromConfig( config ){
 
             case 'status':
                 require('./src/status').init(option);
+                break;
+
+            case 'swagger':
+                var spec = fs.readFileSync(
+                    config.swagger.docPath, 'utf8'
+                );
+
+                var swaggerDoc;
+                switch( path.extname(config.swagger.docPath) ){
+                    case '.yml':
+                    case '.yaml':
+                        swaggerDoc = jsyaml.safeLoad(spec);
+                        break;
+
+                    case '.json':
+                        swaggerDoc = JSON.parse(spec);
+                        break;
+
+                    default:
+                        throw new Error({
+                            message: 'swagger.docPath must be json or yml'
+                        });
+                }
+
+                require('./src/http').enableSwagger(swaggerDoc, config.swagger);
                 break;
         }
     }
