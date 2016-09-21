@@ -89,12 +89,12 @@ describe('toolkit.initFromConfig', function(){
             }
         });
 
-        sut.authorizaion.checkPermission('test-operation', 123)
+        sut.authorization.checkPermission('test-operation', 123)
             .then(result => {
                 assert.isTrue(authEndpoint1.isDone());
                 assert.isTrue(result);
 
-                sut.authorizaion.checkPermission('test-operation-2', 123)
+                sut.authorization.checkPermission('test-operation-2', 123)
                     .then(result => {
                         assert.isTrue(authEndpoint2.isDone());
                         assert.isFalse(result);

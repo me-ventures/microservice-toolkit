@@ -4,6 +4,7 @@ module.exports = {
      */
     init: init,
     initFromConfig: initFromConfig,
+    authorization: require('./src/authorizaion'),
     http: require('./src/http'),
     metrics: require('./src/metrics'),
     context: require('./src/context'),
@@ -33,6 +34,10 @@ function initFromConfig( config ){
         var option = config[key];
 
         switch( key ){
+            case 'authorization':
+                require('./src/authorizaion').init(option.endpoint);
+                break;
+
             case 'http':
                 require('./src/http').listen(option.port);
                 break;
