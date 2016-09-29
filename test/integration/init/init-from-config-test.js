@@ -28,6 +28,9 @@ describe('toolkit.initFromConfig', function(){
                     "name": "test-service"
                 },
                 "port": 10088
+            },
+            "logger": {
+                "module": "public-product-frontend-layer"
             }
         });
 

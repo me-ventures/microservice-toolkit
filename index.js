@@ -8,7 +8,8 @@ module.exports = {
     http: require('./src/http'),
     metrics: require('./src/metrics'),
     context: require('./src/context'),
-    status: require('./src/status')
+    status: require('./src/status'),
+    logger: require('./src/logger')
 };
 
 var fs = require('fs');
@@ -25,7 +26,8 @@ function init( config ){
     return {
         http: require('./src/http'),
         metrics: require('./src/metrics').init(config.metrics),
-        context: require('./src/context').init(config.context)
+        context: require('./src/context').init(config.context),
+        logger: require('./src/logger').init(config.logger)
     }
 }
 
@@ -52,6 +54,10 @@ function initFromConfig( config ){
 
             case 'status':
                 require('./src/status').init(option);
+                break;
+
+            case 'logger':
+                require('./src/logger').init(option);
                 break;
 
             case 'swagger':
