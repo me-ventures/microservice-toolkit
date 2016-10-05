@@ -35,6 +35,10 @@ function enableSwagger( swaggerDoc, options ){
         // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
         app.use(middleware.swaggerMetadata());
 
+        if(options.security) {
+            app.use(middleware.swaggerSecurity(options.security))
+        }
+
         // Validate Swagger requests
         app.use(middleware.swaggerValidator());
 
