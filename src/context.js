@@ -131,4 +131,7 @@ function timeRequest(message) {
     var object = correlationStore[message.correlationId];
 
     metrics.timing("process-time", moment().diff(object))
+
+    // clean up correlationStore object
+    delete correlationStore[message.correlationId];
 }
