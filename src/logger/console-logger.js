@@ -21,8 +21,13 @@ function init( module ){
 // Setup logging
 function formatMessage(args) {
     return (
-        `[${moment().format()}] [${args.level}] [${args.label}] ${parseMessage(args.message)}`
-    )
+        `[${moment().format()}] [${args.level}] [${args.label}] `
+        + `${parseMessage(
+            Object.keys(args.meta).length > 0 
+                ? args.meta
+                : args.message
+        )}`
+    ) + '\r\n'
 }
 
 function parseMessage( message ){
@@ -31,7 +36,7 @@ function parseMessage( message ){
     }
 
     if( typeof message === 'object' ){
-        if( message.message === 'string' ){
+        if( typeof message.message === 'string' ){
             return message.message;
         }
 
