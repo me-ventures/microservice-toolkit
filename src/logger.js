@@ -16,13 +16,15 @@ module.exports = {
 };
 
 function init(config) {
-    var module;
+    var moduleName;
 
     if( config ){
-        module = config.module;
+        moduleName = config.module;
+    } else {
+        moduleName = 'default-unnamed-module';
     }
 
-    instance = logger.init(module);
+    instance = logger.init(moduleName);
 
     return module.exports;
 }

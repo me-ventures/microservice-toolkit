@@ -56,6 +56,14 @@ describe('logger module', function(){
         ));
     });
 
+    it('should init with default settings with no config.logger passed', function(done){
+        sut.init(undefined);
+
+        assert.typeOf(sut, 'object');
+
+        done();
+    });
+
     afterEach(function() {
         process.stdout.write.restore();
         process.stderr.write.restore();
