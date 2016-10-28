@@ -39,6 +39,10 @@ function enableSwagger( swaggerDoc, options ){
             app.use(middleware.swaggerSecurity(options.security))
         }
 
+        if(options.enableCors && options.enableCors === true) {
+            
+        }
+
         // Validate Swagger requests
         app.use(middleware.swaggerValidator());
 

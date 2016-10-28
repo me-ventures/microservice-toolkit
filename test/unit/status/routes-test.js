@@ -8,8 +8,8 @@ var request = require('request');
 describe('routes', function(){
     beforeEach(function(){
         this.sandbox = sinon.sandbox.create();
-        this.sandbox.sut = require('../../../src/status');
-        this.sandbox.provider = require('../../../src/status/provider');
+        this.sandbox.sut = require('../../../src/status/index');
+        this.sandbox.provider = require('../../../src/status/provider/index');
     });
 
     afterEach(function(){

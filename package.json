@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha --recursive test/unit",
+    "test-all": "mocha --recursive test/"
   },
   "repository": {
     "type": "git",
@@ -35,7 +36,6 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.0.2",
-    "request": "^2.74.0",
     "sinon": "^1.17.5"
   }
 }
