@@ -12,7 +12,7 @@
     "url": "git+https://github.com/me-ventures/microservice-toolkit.git"
   },
   "author": "MEV",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/me-ventures/microservice-toolkit/issues"
   },
