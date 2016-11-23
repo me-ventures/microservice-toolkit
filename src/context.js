@@ -9,7 +9,7 @@ var rabbitmq = require('./event-bus/rabbitmq');
 var log = require('winston');
 var moment = require('moment');
 var metrics = require('./metrics');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var statusProvider = require('./status').getProvider();
 
 
