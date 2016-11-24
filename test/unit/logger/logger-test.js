@@ -1,7 +1,7 @@
-var chai = require('chai');
-var assert = chai.assert;
-var sinon = require('sinon');
-var sut = require('../../../src/logger');
+const chai = require('chai');
+const assert = chai.assert;
+const sinon = require('sinon');
+const sut = require('../../../src/logger');
 
 
 describe('logger module', function(){
@@ -56,12 +56,65 @@ describe('logger module', function(){
         ));
     });
 
-    it('should init with default settings with no config.logger passed', function(done){
+    it('should init with default settings with no config.logger passed', function(){
         sut.init(undefined);
 
         assert.typeOf(sut, 'object');
 
-        done();
+    });
+
+    it('should set unhandled exception handler when initialized with unhandledExceptionHandler set to true', function(done){
+        var mochaListener = process.listeners('uncaughtException').pop();
+
+        sut.init({
+            unhandledExceptionHandler: true
+        });
+
+        var exitStub = sinon.stub(process, 'exit');
+        var critSpy = sinon.spy(sut, 'crit');
+
+        process.removeListener('uncaughtException', mochaListener);
+
+        process.emit('uncaughtException', new Error("test-message"));
+
+        setTimeout(() => {
+            process.listeners('uncaughtException').push(mochaListener);
+
+            assert.isTrue(exitStub.calledWith(1));
+            assert.isTrue(critSpy.calledWith("Unhandled exception: test-message"));
+
+            critSpy.restore();
+            exitStub.restore();
+
+            done()
+        }, 125)
+    });
+
+    it('should set unhandled rejection handler when initialized with enableUnhandledRejectionHandler set to true', function(done){
+        sut.init({
+            enableUnhandledRejectionHandler: true
+        });
+
+        var warnSpy = sinon.spy(sut, 'warning');
+
+        process.emit('unhandledRejection', new Error("test rejection"), Promise.reject());
+
+        setTimeout(() => {
+            assert.isTrue(warnSpy.calledWith("Unhandled Rejection at: [object Promise] - reason: Error: test rejection"));
+
+            warnSpy.restore();
+
+            done()
+        }, 125)
+    });
+
+    it('should not set handlers when initialized without enableUnhandledRejectionHandler and unhandledExceptionHandler set', function(){
+        sut.init(undefined);
+
+        var mochaListener = process.listeners('unhandledRejection');
+
+        assert.equal(process.listeners('uncaughtException').length, 1);
+        assert.equal(process.listeners('unhandledRejection').length, 1);
     });
 
     afterEach(function() {
