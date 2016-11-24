@@ -114,7 +114,7 @@ describe('logger module', function(){
         var mochaListener = process.listeners('unhandledRejection');
 
         assert.equal(process.listeners('uncaughtException').length, 1);
-        assert.equal(process.listeners('unhandledRejection').length, 0);
+        assert.equal(process.listeners('unhandledRejection').length, 1);
     });
 
     afterEach(function() {
