@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/me-ventures/microservice-toolkit#readme",
   "dependencies": {
-    "amqplib": "^0.4.1",
+    "amqplib": "^0.5.1",
     "config": "^1.20.1",
     "express": "^4.13.4",
     "is-my-json-valid": "^2.13.1",
