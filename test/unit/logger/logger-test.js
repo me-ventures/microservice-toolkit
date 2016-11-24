@@ -64,14 +64,14 @@ describe('logger module', function(){
     });
 
     it('should set unhandled exception handler when initialized with unhandledExceptionHandler set to true', function(done){
-        let mochaListener = process.listeners('uncaughtException').pop();
+        var mochaListener = process.listeners('uncaughtException').pop();
 
         sut.init({
             unhandledExceptionHandler: true
         });
 
-        let exitStub = sinon.stub(process, 'exit');
-        let critSpy = sinon.spy(sut, 'crit');
+        var exitStub = sinon.stub(process, 'exit');
+        var critSpy = sinon.spy(sut, 'crit');
 
         process.removeListener('uncaughtException', mochaListener);
 
@@ -95,7 +95,7 @@ describe('logger module', function(){
             enableUnhandledRejectionHandler: true
         });
 
-        let warnSpy = sinon.spy(sut, 'warning');
+        var warnSpy = sinon.spy(sut, 'warning');
 
         process.emit('unhandledRejection', new Error("test rejection"), Promise.reject());
 
@@ -108,11 +108,13 @@ describe('logger module', function(){
         }, 125)
     });
 
-    it('should not set handlers when initialized without enableUnhandledRejectionHandler and unhandledExceptionHandler set', function(done){
+    it('should not set handlers when initialized without enableUnhandledRejectionHandler and unhandledExceptionHandler set', function(){
         sut.init(undefined);
 
+        var mochaListener = process.listeners('unhandledRejection');
+
         assert.equal(process.listeners('uncaughtException').length, 1);
-        assert.equal(process.listeners('unhandledRejection').length, 1);
+        assert.equal(process.listeners('unhandledRejection').length, 0);
     });
 
     afterEach(function() {
