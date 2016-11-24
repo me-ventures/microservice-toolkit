@@ -1,7 +1,7 @@
-var logger = require('./logger/console-logger');
-var metrics = require('./metrics');
+const logger = require('./logger/console-logger');
+const metrics = require('./metrics');
 
-var instance;
+let instance;
 
 module.exports = {
     init: init,
@@ -20,6 +20,7 @@ function init(config) {
 
     if( config ){
         moduleName = config.module;
+        setHandlers(config.unhandledExceptionHandler, config.enableUnhandledRejectionHandler);
     } else {
         moduleName = 'default-unnamed-module';
     }
@@ -67,4 +68,37 @@ function info(message) {
 function debug(message) {
     metrics.increment('log.debug');
     instance.debug(message);
+}
+
+/**
+ * Set handlers for the uncaughtException and unhandledRejection events in nodejs.
+ *
+ * @param enableException boolean
+ * @param enableUnhandled boolean
+ */
+function setHandlers(enableException, enableUnhandled) {
+    if(enableException === true) {
+        process.on('uncaughtException', UncaughtExceptionHandler);
+    }
+
+    if(enableUnhandled === true) {
+        process.on('unhandledRejection', unhandledRejectionHandler);
+    }
+}
+
+/**
+ * Handler for the uncaught exception event inside nodejs. It will print out a critical error message and will then
+ * exit the application.
+ */
+function UncaughtExceptionHandler(error) {
+    // Call module.exports.crit here so that we can intercept the call in the tests
+    module.exports.crit(`Unhandled exception: ${error.message}`);
+    process.exit(1);
+}
+
+/**
+ * Handler for the unhandledRejection event. Will print out a warning message using the log system.
+ */
+function unhandledRejectionHandler(reason, promise) {
+    module.exports.warning(`Unhandled Rejection at: ${promise} - reason: ${reason}`);
 }
