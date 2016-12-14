@@ -1,8 +1,8 @@
 declare namespace MevToolkit {
 
-    interface ToolkitStatic {
+    interface Toolkit {
         init: any,
-        initFromConfig( config : Config ): ToolkitStatic,
+        initFromConfig( config : Config ): Toolkit,
         authorization: any,
         http: any,
         metrics: any,
@@ -18,13 +18,9 @@ declare namespace MevToolkit {
         context ?: any,
         status ?: any,
         logger ?: any,
-        swagger ?: any,
-        logger ?: any
+        swagger ?: any
     }
 }
 
-declare var Toolkit: MevToolkit.ToolkitStatic;
+export = MevToolkit;
 
-declare module "microservice-toolkit" {
-    export = Toolkit;
-}
