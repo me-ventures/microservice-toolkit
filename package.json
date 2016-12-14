@@ -3,6 +3,7 @@
   "version": "1.0.4",
   "description": "",
   "main": "index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "test": "mocha --recursive test/unit",
     "test-all": "mocha --recursive test/"
