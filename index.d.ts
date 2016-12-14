@@ -23,9 +23,8 @@ declare namespace Toolkit {
     }
 }
 
-
-declare var toolkit: Toolkit.ToolkitStatic;
+declare var Toolkit: Toolkit.ToolkitStatic;
 
 declare module "microservice-toolkit" {
-    export = toolkit;
+    export = Toolkit;
 }
