@@ -1,4 +1,4 @@
-declare namespace Toolkit {
+declare namespace MevToolkit {
 
     interface ToolkitStatic {
         init: any,
@@ -23,7 +23,7 @@ declare namespace Toolkit {
     }
 }
 
-declare var Toolkit: Toolkit.ToolkitStatic;
+declare var Toolkit: MevToolkit.ToolkitStatic;
 
 declare module "microservice-toolkit" {
     export = Toolkit;
