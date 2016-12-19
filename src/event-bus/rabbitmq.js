@@ -57,8 +57,7 @@ function connectExchange(name, topics, handler) {
         } )
 }
 
-function connectExchangeSharedQueue(name, topics, queueName, handler) {
-
+function connectExchangeSharedQueue(name, topics, queueName, handler, options) {
     if(Array.isArray(topics) === false) {
         throw { message: "Topics should be array."}
     }
@@ -66,7 +65,13 @@ function connectExchangeSharedQueue(name, topics, queueName, handler) {
     channel
         .then(chan => {
             chan.assertExchange(name, 'direct', {durable: true});
-            chan.prefetch(1);
+
+            if(options.prefetch) {
+                chan.prefetch(options.prefetch);
+            }
+            else {
+                chan.prefetch(1);
+            }
 
             return chan.assertQueue(queueName, {durable: true})
                 .then(q => {

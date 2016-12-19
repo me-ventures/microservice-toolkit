@@ -68,8 +68,9 @@ function consume(exchangeName, topics, handler) {
  * @param topics
  * @param queueName
  * @param handler
+ * @param fetchCount
  */
-function consumeShared(exchangeName, topics, queueName, handler) {
+function consumeShared(exchangeName, topics, queueName, handler, fetchCount = 1) {
     var messageHandler = function(message) {
         // make sure we don't have things like buffers
         message.content = JSON.parse(message.content.toString());
@@ -85,7 +86,7 @@ function consumeShared(exchangeName, topics, queueName, handler) {
         chain(message, handler)
     };
 
-    rabbitmq.connectExchangeSharedQueue(exchangeName, topics, queueName, messageHandler)
+    rabbitmq.connectExchangeSharedQueue(exchangeName, topics, queueName, messageHandler, { prefetch: fetchCount });
 
     // add consume events to status provider
     topics.forEach(function(topic){
