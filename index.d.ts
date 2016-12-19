@@ -1,6 +1,13 @@
-declare namespace MevToolkit {
+declare module "microservice-toolkit" {
+    export function initFromConfig( config : Config ): Toolkit
+    export let authorization: Authorization;
+    export let http: Http;
+    export let metrics: Metrics;
+    export let context: Context;
+    export let status: Status;
+    export let logger: Logger;
 
-    interface Toolkit {
+    export interface Toolkit {
         initFromConfig( config : Config ): Toolkit,
         authorization: Authorization,
         http: Http,
@@ -11,39 +18,39 @@ declare namespace MevToolkit {
     }
 
 
-    interface Authorization {
+    export interface Authorization {
         init(endpoint : string) : void
         checkPermission( operation: string, userId: number) : boolean
     }
 
-    interface Http {
+    export interface Http {
         listen(port: number) : void,
         addRouter(endpointName : string, route: any) : void
         addMiddleware( middleware : any) : void
         enableSwagger(swaggerDoc: any, SwaggerConfig : SwaggerConfig) : void
     }
 
-    interface Metrics {
+    export interface Metrics {
         init(config: MetricsConfig) : Metrics
         gauge(name: string, value: number) : void
         timing(name : string, value : number) : void
         increment(name : string) : void
     }
 
-    interface Context  {
+    export interface Context  {
         init(config : ContextConfig) : Context
         consume(exchangeName: string, topics: string[], handler: (message: any) => Promise<any>) : void
         consumeShared(exchangeName: string, topics: string[], queueName: string, handler: (message: any) => Promise<any>) : void
         publishToExchange(exchange: string, key: string, message : any) : void
     }
 
-    interface Status {
+    export interface Status {
         init(config : StatusConfig) : void
         shutdown() : void
         getProvider() : any
     }
 
-    interface Logger {
+    export interface Logger {
         init(config : LoggerConfig): Logger,
         emerg(message : string) : void,
         alert(message : string): void,
@@ -58,9 +65,9 @@ declare namespace MevToolkit {
     /**
      * Config interfaces
      */
-    interface Config {
+    export interface Config {
         name : string,
-        authorization ?: AutorizationConfig,
+        authorization ?: AuthorizationConfig,
         http ?: HttpConfig,
         metrics ?: MetricsConfig,
         context ?: ContextConfig,
@@ -69,49 +76,43 @@ declare namespace MevToolkit {
         swagger ?: SwaggerConfig
     }
 
-    interface HttpConfig {
+    export interface HttpConfig {
         port: number
     }
 
-    interface AutorizationConfig {
+    export interface AuthorizationConfig {
         endpoint: string
     }
 
-    interface MetricsConfig {
+    export interface MetricsConfig {
         host: string,
         port: number,
         prefix: string
     }
 
-    interface ContextConfig {
-        rabbitmq ?: RabbitmqContextConfig
+    export interface ContextConfig {
+        rabbitmq ?: RabbitMQContextConfig
     }
 
-    interface RabbitmqContextConfig {
+    export interface RabbitMQContextConfig {
         host: string
     }
 
-    interface StatusConfig {
+    export interface StatusConfig {
         port: number,
         service: {
             name: string
         }
     }
 
-    interface LoggerConfig {
+    export interface LoggerConfig {
         module: string
     }
 
-    interface SwaggerConfig {
+    export interface SwaggerConfig {
         docPath: string,
         swaggerUi: string,
         controllers: string,
         useStubs: boolean
     }
-}
-
-declare var toolkit: MevToolkit.Toolkit;
-
-declare module "microservice-toolkit" {
-    export = toolkit;
 }
