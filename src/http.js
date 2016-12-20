@@ -2,7 +2,8 @@ module.exports = {
     listen: listen,
     addRouter: addRouter,
     addMiddleware: addMiddleware,
-    enableSwagger: enableSwagger
+    enableSwagger: enableSwagger,
+    getApp: getApp
 };
 
 
@@ -69,4 +70,8 @@ function logResponseCode(req, res, next) {
     };
 
     next()
+}
+
+function getApp() {
+    return app;
 }

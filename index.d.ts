@@ -27,7 +27,8 @@ declare module "microservice-toolkit" {
         listen(port: number) : void,
         addRouter(endpointName : string, route: any) : void
         addMiddleware( middleware : any) : void
-        enableSwagger(swaggerDoc: any, SwaggerConfig : SwaggerConfig) : void
+        enableSwagger(swaggerDoc: any, SwaggerConfig : SwaggerConfig) : void,
+        getApp() : any
     }
 
     export interface Metrics {
