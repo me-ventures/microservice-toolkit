@@ -20,7 +20,7 @@ declare module "microservice-toolkit" {
 
     export interface Authorization {
         init(endpoint : string) : void
-        checkPermission( operation: string, userId: number) : boolean
+        checkPermission( operation: string, userId: number) : Promise<boolean>
     }
 
     export interface Http {
