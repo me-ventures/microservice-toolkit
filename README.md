@@ -6,7 +6,7 @@ Toolkit to support the development of microservices developed in nodejs.
 
 [![NPM](https://nodei.co/npm/microservice-toolkit.png)](https://nodei.co/npm/microservice-toolkit/)
 
-Node.js framework to provice a basic foundation to build microservices on top of.
+Node.js framework to provide a basic foundation to build microservices on top of.
 
 ## Installation
 
