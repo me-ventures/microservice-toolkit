@@ -100,5 +100,16 @@ function UncaughtExceptionHandler(error) {
  * Handler for the unhandledRejection event. Will print out a warning message using the log system.
  */
 function unhandledRejectionHandler(reason, promise) {
+
+    // if the reason is an object, output the message, or failing that, JSON
+    if (typeof reason === 'object' ){
+        reason = reason.message || reason.msg || JSON.stringify(reason);
+    }
+
+    // if the promise is an object, output it in JSON format
+    if (typeof promise === 'object' ){
+        promise = 'promise: ' + JSON.stringify(promise);
+    }
+
     module.exports.warning(`Unhandled Rejection at: ${promise} - reason: ${reason}`);
 }

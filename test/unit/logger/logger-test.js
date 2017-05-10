@@ -97,10 +97,10 @@ describe('logger module', function(){
 
         var warnSpy = sinon.spy(sut, 'warning');
 
-        process.emit('unhandledRejection', new Error("test rejection"), Promise.reject());
+        process.emit('unhandledRejection', new Error("Error: test rejection"), Promise.reject());
 
         setTimeout(() => {
-            assert.isTrue(warnSpy.calledWith("Unhandled Rejection at: [object Promise] - reason: Error: test rejection"));
+            assert.isTrue(warnSpy.calledWith("Unhandled Rejection at: promise: {} - reason: Error: test rejection"));
 
             warnSpy.restore();
 
