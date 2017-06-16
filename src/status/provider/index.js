@@ -73,7 +73,13 @@ function setEventConsumeExample( namespace, topic, example ){
         );
     } else if( ! consumeExampleKeyLookup[key].exampleAdded ) {
 
-        data.events.consume[consumeExampleKeyLookup[key].idx].example = example;
+        // prevent a circular reference introduced later from causing
+        // JSON.stringify to break
+        let clonedExample = JSON.parse(JSON.stringify(example));
+
+        data.events.consume[consumeExampleKeyLookup[key].idx].example = (
+            clonedExample
+        );
 
         consumeExampleKeyLookup[key].exampleAdded = true;
     }
