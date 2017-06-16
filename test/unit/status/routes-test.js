@@ -180,6 +180,74 @@ describe('routes', function(){
             });
         });
 
+        it('should add examples for present events once, and not break with post-set circular reference introduction (publish)', function(done){
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            });
+            this.sandbox.provider.addEventPublish(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            let exampleEvent = {
+                hello: 'world',
+                this_is: {
+                    some: 'data'
+                }
+            };
+
+            for( var i = 0; i < 10; i ++ ){
+                exampleEvent.this_is.some = 'data ' + i;
+
+                this.sandbox.provider.setEventPublishExample(
+                    'test-ns-2',
+                    'test-event-2',
+                    exampleEvent
+                );
+            }
+
+            // circular reference added after example event is set
+            let circularRefObject = {
+                circular: exampleEvent
+            };
+
+            exampleEvent.circular = circularRefObject;
+
+
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    events: {
+                        consume: [],
+                        publish: [
+                            {
+                                namespace: 'test-ns-2',
+                                topic: 'test-event-2',
+                                schema: '',
+                                example: {
+                                    hello: 'world',
+                                    this_is: {
+                                        some: 'data 0'
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                });
+
+                done();
+            });
+        });
+
         it('should throw error for not present events (publish)', function(done){
             this.sandbox.sut.init({
                 service: {
@@ -235,6 +303,71 @@ describe('routes', function(){
                     }
                 }
             );
+
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    events: {
+                        consume: [
+                            {
+                                namespace: 'test-ns-2',
+                                topic: 'test-event-2',
+                                schema: '',
+                                queueName: '',
+                                shared: false,
+                                example: {
+                                    hello: 'world',
+                                    this_is: {
+                                        some: 'consume data'
+                                    }
+                                }
+                            }
+                        ],
+                        publish: []
+                    }
+                });
+
+                done();
+            });
+        });
+
+        it('should not error if a circular reference is introduced into examples for present events (consume)', function(done){
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            });
+            this.sandbox.provider.addEventConsume(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            let exampleEvent = {
+                hello: 'world',
+                this_is: {
+                    some: 'consume data'
+                }
+            };
+
+            this.sandbox.provider.setEventConsumeExample(
+                'test-ns-2',
+                'test-event-2',
+                exampleEvent
+            );
+
+            // circular reference added after example event is set
+            let circularRefObject = {
+                circular: exampleEvent
+            };
+
+            exampleEvent.circular = circularRefObject;
 
 
             request.get('http://localhost:11111/status', function(err, res, body){

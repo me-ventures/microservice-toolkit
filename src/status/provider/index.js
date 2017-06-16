@@ -73,7 +73,13 @@ function setEventConsumeExample( namespace, topic, example ){
         );
     } else if( ! consumeExampleKeyLookup[key].exampleAdded ) {
 
-        data.events.consume[consumeExampleKeyLookup[key].idx].example = example;
+        // prevent a circular reference introduced later from causing
+        // JSON.stringify to break
+        let clonedExample = JSON.parse(JSON.stringify(example));
+
+        data.events.consume[consumeExampleKeyLookup[key].idx].example = (
+            clonedExample
+        );
 
         consumeExampleKeyLookup[key].exampleAdded = true;
     }
@@ -107,7 +113,13 @@ function setEventPublishExample( namespace, topic, example ){
         );
     } else if( ! publishExampleKeyLookup[key].exampleAdded ) {
 
-        data.events.publish[publishExampleKeyLookup[key].idx].example = example;
+        // prevent a circular reference introduced later from causing
+        // JSON.stringify to break
+        let clonedExample = JSON.parse(JSON.stringify(example));
+
+        data.events.publish[publishExampleKeyLookup[key].idx].example = (
+            clonedExample
+        );
 
         publishExampleKeyLookup[key].exampleAdded = true;
     }
