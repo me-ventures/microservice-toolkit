@@ -15,17 +15,21 @@ function getProvider(){
     return provider;
 }
 
-function init( config ){
-    config = config || {};
-    config.port = config.port || 11111;
+function init( statusConfig, fullConfig ){
+    statusConfig = statusConfig || {};
+    statusConfig.port = statusConfig.port || 11111;
 
-    if( typeof config.service !== 'object' || ! config.service.name ){
+    if( typeof statusConfig.service !== 'object' || ! statusConfig.service.name ){
         throw new Error("service.name must be set");
     }
 
-    provider.setServiceInformation(config.service.name);
+    provider.setServiceInformation(statusConfig.service.name);
 
-    initHttpEndpoint(config);
+    if( typeof fullConfig === 'object' ){
+        provider.setHttpEndpointsFromConfig(fullConfig);
+    }
+
+    initHttpEndpoint(statusConfig);
 }
 
 function shutdown(){

@@ -475,5 +475,69 @@ describe('routes', function(){
                 done();
             });
         });
+
+        it('should detect unique config values that start with http:// or https:// and add them to httpEndpoints property', function(done) {
+            this.sandbox.sut.init({
+                service: {
+                    name: 'test-service'
+                }
+            }, {
+                some: {
+                    stuff: 'here',
+                    blah: 'http://endpoint/blah/v3'
+                },
+                endpoints: [
+                    'https://endpoint2',
+                    'https://endpoint2',
+                    'https://endpoint2',
+                    'http://endpoint3',
+                    {
+                        something: {
+                            notHttp: 'httX://boo',
+                            deeper: 'http://endpoint4',
+                        }
+                    }
+                ],
+                thing: {
+                    endpoint5: 'https://endpoint5/api/v5/blah'
+                }
+            });
+
+            this.sandbox.provider.addEventPublish(
+                'test-ns-2',
+                'test-event-2'
+            );
+
+            request.get('http://localhost:11111/status', function(err, res, body){
+                assert.equal(res.statusCode, 200);
+
+                body = JSON.parse(body);
+
+                assert.deepEqual(body, {
+                    service: {
+                        name: 'test-service'
+                    },
+                    httpEndpoints: [
+                        'http://endpoint/blah/v3',
+                        'https://endpoint2',
+                        'http://endpoint3',
+                        'http://endpoint4',
+                        'https://endpoint5/api/v5/blah'
+                    ],
+                    events: {
+                        consume: [],
+                        publish: [
+                            {
+                                namespace: 'test-ns-2',
+                                topic: 'test-event-2',
+                                schema: ''
+                            }
+                        ]
+                    }
+                });
+
+                done();
+            });
+        });
     });
 });
