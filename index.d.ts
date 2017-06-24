@@ -46,7 +46,7 @@ declare module "microservice-toolkit" {
     }
 
     export interface Status {
-        init(config : StatusConfig) : void
+        init(config : StatusConfig, fullConfig ?: Config) : void
         shutdown() : void
         getProvider() : any
     }
@@ -74,7 +74,10 @@ declare module "microservice-toolkit" {
         context ?: ContextConfig,
         status ?: StatusConfig,
         logger ?: LoggerConfig,
-        swagger ?: SwaggerConfig
+        swagger ?: SwaggerConfig,
+
+        // other values may also be present in config
+        [index: string]: any
     }
 
     export interface HttpConfig {

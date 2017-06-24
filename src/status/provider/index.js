@@ -4,6 +4,7 @@ module.exports = {
     setEventConsumeExample: setEventConsumeExample,
     addEventPublish: addEventPublish,
     setEventPublishExample: setEventPublishExample,
+    setHttpEndpointsFromConfig: setHttpEndpointsFromConfig,
     getData: getData,
     reset: reset
 };
@@ -45,6 +46,32 @@ function reset(){
 
 function setServiceInformation( name ){
     data.service.name = name;
+}
+
+let endpoints = {};
+function setHttpEndpointsFromConfig( config ){
+
+    function checkForHttpValue( value ){
+        if( value.startsWith('http://') || value.startsWith('https://') ){
+            endpoints[value] = true;
+        }
+    }
+
+    if( Array.isArray(config) ){
+        config.forEach(setHttpEndpointsFromConfig);
+    }
+
+    else if( typeof config === 'object' ){
+        for( let k in config ){
+            setHttpEndpointsFromConfig(config[k]);
+        }
+    }
+
+    else if( typeof config === 'string' ){
+        checkForHttpValue(config);
+    }
+
+    data.httpEndpoints = Object.keys(endpoints);
 }
 
 function addEventConsume( namespace, topic, shared, queueName, schema ){

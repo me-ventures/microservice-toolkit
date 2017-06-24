@@ -53,7 +53,7 @@ function initFromConfig( config ){
                 break;
 
             case 'status':
-                require('./src/status').init(option);
+                require('./src/status').init(option, config);
                 break;
 
             case 'logger':
