@@ -1,0 +1,46 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:recommended"
+    ],
+    "jsRules": {},
+    "rules": {
+      "object-literal-sort-keys": false,
+      "no-var-requires": false,
+      "whitespace": [true,
+        "check-branch",
+        "check-decl",
+        "check-operator",
+        "check-module",
+        "check-separator",
+        "check-type",
+        "check-typecast",
+        "check-preblock"
+      ],
+      "one-line": [false],
+      "member-ordering": [
+        true,
+        {
+          "order": [
+            "public-static-field",
+            "public-static-method",
+            "protected-static-field",
+            "private-static-field",
+            "public-instance-field",
+            "protected-instance-field",
+            "private-instance-field",
+            "public-constructor",
+            "protected-constructor",
+            "private-constructor",
+            "public-instance-method",
+            "protected-instance-method",
+            "protected-static-method",
+            "private-static-method",
+            "private-instance-method"
+          ]
+        }
+      ],
+      "no-namespace": false
+    },
+    "rulesDirectory": []
+}
