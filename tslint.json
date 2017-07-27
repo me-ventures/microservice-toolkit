@@ -17,7 +17,8 @@
         "check-typecast",
         "check-preblock"
       ],
-      "one-line": [false],
+      "one-line": false,
+      "no-consecutive-blank-lines": [true, 2],
       "member-ordering": [
         true,
         {
