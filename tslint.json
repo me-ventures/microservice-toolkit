@@ -18,6 +18,7 @@
         "check-preblock"
       ],
       "one-line": false,
+      "trailing-comma": false,
       "no-consecutive-blank-lines": [true, 2],
       "member-ordering": [
         true,
