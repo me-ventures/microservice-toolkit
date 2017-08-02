@@ -20,6 +20,9 @@
       "one-line": false,
       "trailing-comma": false,
       "arrow-parens": false,
+      "variable-name": false,
+      "object-literal-key-quotes": false,
+      "object-literal-shorthand": false,
       "no-consecutive-blank-lines": [true, 2],
       "member-ordering": [
         true,
