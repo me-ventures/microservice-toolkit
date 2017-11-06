@@ -41,7 +41,7 @@ declare module "microservice-toolkit" {
     export interface Context  {
         init(config : ContextConfig) : Context
         consume(exchangeName: string, topics: string[], handler: (message: any) => Promise<any>) : void
-        consumeShared(exchangeName: string, topics: string[], queueName: string, handler: (message: any) => Promise<any>) : void
+        consumeShared(exchangeName: string, topics: string[], queueName: string, handler: (message: any) => Promise<any>, prefetchCount ?: number) : void
         publishToExchange(exchange: string, key: string, message : any) : void
     }
 

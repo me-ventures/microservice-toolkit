@@ -1,6 +1,6 @@
 {
   "name": "microservice-toolkit",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "",
   "main": "index.js",
   "types": "./index.d.ts",
@@ -31,6 +31,7 @@
     "request": "^2.75.0",
     "request-promise": "^4.1.1",
     "swagger-tools": "^0.10.1",
+    "tslint": "^5.5.0",
     "uuid": "^3.0.0",
     "winston": "^2.2.0"
   },
