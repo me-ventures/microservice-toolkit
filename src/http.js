@@ -3,7 +3,8 @@ module.exports = {
     addRouter: addRouter,
     addMiddleware: addMiddleware,
     enableSwagger: enableSwagger,
-    getApp: getApp
+    getApp: getApp,
+    init: init
 };
 
 
@@ -14,12 +15,24 @@ var metrics = require('./metrics');
 var app = express();
 var swaggerTools = require('swagger-tools');
 
-app.use(morgan('combined'));
+
 app.use(logResponseCode);
 
 function listen( port ){
-    app.listen(port, function () {
-        log.info('Listening on port ' + port);
+    return init({ port: port});
+}
+
+function init(config) {
+    if(config.logOnlyErrors && config.logOnlyErrors === false) {
+        app.use(morgan('combined'));
+    } else {
+        app.use(morgan('combined', {
+            skip: function (req, res) { return res.statusCode < 400 }
+        }));
+    }
+
+    app.listen(config.port, function () {
+        log.info('Listening on port ' + config.port);
     });
 }
 
