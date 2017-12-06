@@ -5,8 +5,8 @@
   "main": "index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "test": "mocha --recursive test/unit",
-    "test-all": "mocha --recursive test/"
+    "test": "./node_modules/.bin/mocha --recursive test/unit",
+    "test-all": "./node_modules/.bin/mocha --recursive test/"
   },
   "repository": {
     "type": "git",
@@ -37,6 +37,6 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^3.0.2",
-    "sinon": "^1.17.5"
+    "sinon": "^4.1.2"
   }
 }
