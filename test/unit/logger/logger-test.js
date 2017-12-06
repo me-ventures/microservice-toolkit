@@ -63,49 +63,81 @@ describe('logger module', function(){
 
     });
 
-    it('should set unhandled exception handler when initialized with unhandledExceptionHandler set to true', function(done){
-        var mochaListener = process.listeners('uncaughtException').pop();
+    it('should set unhandled exception handler when initialized with unhandledExceptionHandler set to true', async function(){
+        return new Promise((resolve,reject) => {
+            var mochaListener = process.listeners('uncaughtException').pop();
 
-        sut.init({
-            unhandledExceptionHandler: true
+            sut.init({
+                unhandledExceptionHandler: true
+            });
+
+            var exitStub = sinon.stub(process, 'exit');
+            var critSpy = sinon.spy(sut, 'crit');
+
+            process.removeListener('uncaughtException', mochaListener);
+
+            process.emit('uncaughtException', new Error("test-message"));
+
+            setTimeout(() => {
+                process.listeners('uncaughtException').push(mochaListener);
+
+                try {
+                    assert.isTrue(exitStub.calledWith(1));
+
+                    assert.equal(critSpy.callCount, 2);
+                    assert.isTrue(critSpy.calledWith("Unhandled exception: test-message"));
+
+                    const critCall2 = critSpy.getCall(1);
+                    assert.isTrue(critCall2.args[0].includes("/test/unit/logger/logger-test.js"));
+
+                    return resolve();
+                }
+
+                catch ( err ) {
+                    return reject(err);
+                }
+
+                finally {
+                    critSpy.restore();
+                    exitStub.restore();
+                }
+            }, 125);
         });
-
-        var exitStub = sinon.stub(process, 'exit');
-        var critSpy = sinon.spy(sut, 'crit');
-
-        process.removeListener('uncaughtException', mochaListener);
-
-        process.emit('uncaughtException', new Error("test-message"));
-
-        setTimeout(() => {
-            process.listeners('uncaughtException').push(mochaListener);
-
-            assert.isTrue(exitStub.calledWith(1));
-            assert.isTrue(critSpy.calledWith("Unhandled exception: test-message"));
-
-            critSpy.restore();
-            exitStub.restore();
-
-            done()
-        }, 125)
     });
 
-    it('should set unhandled rejection handler when initialized with enableUnhandledRejectionHandler set to true', function(done){
-        sut.init({
-            enableUnhandledRejectionHandler: true
+    it('should set unhandled rejection handler when initialized with enableUnhandledRejectionHandler set to true', async function(){
+        return new Promise((resolve, reject) => {
+            sut.init({
+                enableUnhandledRejectionHandler: true
+            });
+
+            const critSpy = sinon.spy(sut, 'crit');
+
+            process.emit('unhandledRejection', new Error("Error: test rejection"));
+
+            setTimeout(() => {
+                try {
+                    assert.equal(critSpy.callCount, 2);
+
+                    const critCall1 = critSpy.getCall(0);
+                    assert.equal(critCall1.args[0], "Unhandled Promise Rejection - reason: [Error: test rejection]");
+
+                    const critCall2 = critSpy.getCall(1);
+                    assert.isTrue(critCall2.args[0].includes("/test/unit/logger/logger-test.js"));
+
+                    return resolve();
+                }
+
+                catch ( err ) {
+                    return reject(err);
+                }
+
+                finally {
+                    critSpy.restore();
+                }
+
+            }, 125)
         });
-
-        var warnSpy = sinon.spy(sut, 'warning');
-
-        process.emit('unhandledRejection', new Error("Error: test rejection"), Promise.reject());
-
-        setTimeout(() => {
-            assert.isTrue(warnSpy.calledWith("Unhandled Rejection at: promise: {} - reason: Error: test rejection"));
-
-            warnSpy.restore();
-
-            done()
-        }, 125)
     });
 
     it('should not set handlers when initialized without enableUnhandledRejectionHandler and unhandledExceptionHandler set', function(){

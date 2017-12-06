@@ -93,23 +93,16 @@ function setHandlers(enableException, enableUnhandled) {
 function UncaughtExceptionHandler(error) {
     // Call module.exports.crit here so that we can intercept the call in the tests
     module.exports.crit(`Unhandled exception: ${error.message}`);
+    module.exports.crit(error.stack.toString());
     process.exit(1);
 }
 
 /**
  * Handler for the unhandledRejection event. Will print out a warning message using the log system.
  */
-function unhandledRejectionHandler(reason, promise) {
+function unhandledRejectionHandler(error) {
+    let reasonString = error.message || error.msg || JSON.stringify(error);
 
-    // if the reason is an object, output the message, or failing that, JSON
-    if (typeof reason === 'object' ){
-        reason = reason.message || reason.msg || JSON.stringify(reason);
-    }
-
-    // if the promise is an object, output it in JSON format
-    if (typeof promise === 'object' ){
-        promise = 'promise: ' + JSON.stringify(promise);
-    }
-
-    module.exports.warning(`Unhandled Rejection at: ${promise} - reason: ${reason}`);
+    module.exports.crit(`Unhandled Promise Rejection - reason: [${reasonString}]`);
+    module.exports.crit(error.stack.toString());
 }
