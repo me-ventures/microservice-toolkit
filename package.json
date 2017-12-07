@@ -1,6 +1,6 @@
 {
   "name": "@convenior/microservice-toolkit",
-  "version": "1.1.14",
+  "version": "1.1.15",
   "description": "",
   "main": "index.js",
   "types": "./index.d.ts",
