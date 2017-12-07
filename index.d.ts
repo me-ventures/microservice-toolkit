@@ -1,4 +1,4 @@
-declare module "microservice-toolkit" {
+declare module "@convenior/microservice-toolkit" {
     export function initFromConfig( config : Config ): Toolkit
     export let authorization: Authorization;
     export let http: Http;
