@@ -94,6 +94,13 @@ function connectExchangeSharedQueue(name, topics, queueName, handler, options) {
 }
 
 function publishToExchange(name, key, message) {
+
+    if ( isUndefined(message) ) {
+        throw new Error(
+            `attempted to publish undefined message on exchange [${name}] [${key}]`
+        );
+    }
+
     channel.then(function(channel) {
         channel.assertExchange(name, 'direct', {durable: true});
         return channel.publish(name, key, new Buffer(JSON.stringify(message)))
