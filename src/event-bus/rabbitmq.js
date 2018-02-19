@@ -95,7 +95,7 @@ function connectExchangeSharedQueue(name, topics, queueName, handler, options) {
 
 function publishToExchange(name, key, message) {
 
-    if ( isUndefined(message) ) {
+    if ( message == undefined ) {
         throw new Error(
             `attempted to publish undefined message on exchange [${name}] [${key}]`
         );
