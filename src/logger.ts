@@ -3,19 +3,8 @@ const metrics = require('./metrics');
 
 let instance;
 
-module.exports = {
-    init: init,
-    emerg: emerg,
-    alert: alert,
-    crit: crit,
-    error: error,
-    warning: warning,
-    notice: notice,
-    info: info,
-    debug: debug
-};
 
-function init(config) {
+export function init(config ?: LoggerConfig) {
     var moduleName;
 
     if( config ){
@@ -27,7 +16,18 @@ function init(config) {
 
     instance = logger.init(moduleName);
 
-    return module.exports;
+    // for legacy functionality
+    return {
+        init: init,
+        emerg: emerg,
+        alert: alert,
+        crit: crit,
+        error: error,
+        warning: warning,
+        notice: notice,
+        info: info,
+        debug: debug
+    };
 }
 
 function emerg(message) {
@@ -92,8 +92,8 @@ function setHandlers(enableException, enableUnhandled) {
  */
 function UncaughtExceptionHandler(error) {
     // Call module.exports.crit here so that we can intercept the call in the tests
-    module.exports.crit(`Unhandled exception: ${error.message}`);
-    module.exports.crit(error.stack.toString());
+    crit(`Unhandled exception: ${error.message}`);
+    crit(error.stack.toString());
     process.exit(1);
 }
 
@@ -103,6 +103,13 @@ function UncaughtExceptionHandler(error) {
 function unhandledRejectionHandler(error) {
     let reasonString = error.message || error.msg || JSON.stringify(error);
 
-    module.exports.crit(`Unhandled Promise Rejection - reason: [${reasonString}]`);
-    module.exports.crit(error.stack.toString());
+    crit(`Unhandled Promise Rejection - reason: [${reasonString}]`);
+    crit(error.stack.toString());
+}
+
+export interface LoggerConfig {
+    module: string;
+
+    unhandledExceptionHandler ?: boolean;
+    enableUnhandledRejectionHandler ?: boolean;
 }

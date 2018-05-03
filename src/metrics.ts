@@ -1,35 +1,34 @@
-module.exports = {
-    init: init,
-    gauge: gauge,
-    timing: timing,
-    increment: increment
-};
-
 var lynx = require('lynx');
 
 var metrics;
 var metricPrefix;
 
-function init( config ){
+
+export function init( config: MetricsConfig ){
      metrics = new lynx(config.host, config.port);
      metricPrefix = config.prefix + ".";
 
      return module.exports;
 }
 
-function gauge(name, value) {
+export function gauge(name, value) {
     metrics.gauge(metricPrefix + name, value);
 }
 
-function timing(name, value) {
+export function timing(name, value) {
     if(metrics !== undefined) {
         metrics.timing(metricPrefix + name, value)
     }
 }
 
-function increment(name) {
+export function increment(name) {
     if(metrics !== undefined) {
         metrics.increment(metricPrefix + name)
     }
 }
 
+export interface MetricsConfig {
+    host: string,
+    port: number,
+    prefix: string
+}

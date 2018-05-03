@@ -1,9 +1,4 @@
-module.exports = {
-    init: init,
-    consume: consume,
-    consumeShared: consumeShared,
-    publishToExchange
-};
+import { RabbitMQContextConfig } from "./event-bus/rabbitmq";
 
 var rabbitmq = require('./event-bus/rabbitmq');
 var log = require('winston');
@@ -16,7 +11,7 @@ var statusProvider = require('./status').getProvider();
 var correlationStore = {};
 
 
-function init( config ){
+export function init( config: ContextConfig ){
     rabbitmq.init(config.rabbitmq);
 
     return module.exports;
@@ -32,7 +27,7 @@ function init( config ){
  * @param topics
  * @param handler
  */
-function consume(exchangeName, topics, handler) {
+export function consume(exchangeName, topics, handler) {
     // Setup chain
     var messageHandler = function(message) {
         // make sure we don't have things like buffers
@@ -70,7 +65,7 @@ function consume(exchangeName, topics, handler) {
  * @param handler
  * @param fetchCount
  */
-function consumeShared(exchangeName, topics, queueName, handler, fetchCount = 1) {
+export function consumeShared(exchangeName, topics, queueName, handler, fetchCount = 1) {
     var messageHandler = function(message) {
         // make sure we don't have things like buffers
         message.content = JSON.parse(message.content.toString());
@@ -94,7 +89,7 @@ function consumeShared(exchangeName, topics, queueName, handler, fetchCount = 1)
     });
 }
 
-function publishToExchange(exchange, key, message) {
+export function publishToExchange(exchange, key, message) {
     metrics.increment("message-sent");
 
     rabbitmq.publishToExchange(exchange, key, message)
@@ -104,7 +99,7 @@ function publishToExchange(exchange, key, message) {
     statusProvider.setEventPublishExample(exchange, key, message);
 }
 
-function chain(message, next) {
+export function chain(message, next) {
     metrics.increment("message-received");
 
     Promise.resolve(checkCorrelationId(message.content))
@@ -114,7 +109,7 @@ function chain(message, next) {
         .catch(log.error)
 }
 
-function checkCorrelationId(message) {
+export function checkCorrelationId(message) {
     if(typeof message.correlationId != 'string') {
         message.correlationId = uuid.v4();
     }
@@ -124,7 +119,7 @@ function checkCorrelationId(message) {
     return message;
 }
 
-function timeRequest(message) {
+export function timeRequest(message) {
     if(typeof message.correlationId != 'string') {
         return log.error("No correlation present in message: " + JSON.stringify(message))
     }
@@ -135,4 +130,8 @@ function timeRequest(message) {
 
     // clean up correlationStore object
     delete correlationStore[message.correlationId];
+}
+
+export interface ContextConfig {
+    rabbitmq ?: RabbitMQContextConfig
 }

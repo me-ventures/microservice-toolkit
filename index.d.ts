@@ -66,41 +66,41 @@ declare module "@convenior/microservice-toolkit" {
     /**
      * Config interfaces
      */
-    export interface Config {
-        name : string,
-        authorization ?: AuthorizationConfig,
-        http ?: HttpConfig,
-        metrics ?: MetricsConfig,
-        context ?: ContextConfig,
-        status ?: StatusConfig,
-        logger ?: LoggerConfig,
-        swagger ?: SwaggerConfig,
+    // export interface Config {
+    //     name : string,
+    //     authorization ?: AuthorizationConfig,
+    //     http ?: HttpConfig,
+    //     metrics ?: MetricsConfig,
+    //     context ?: ContextConfig,
+    //     status ?: StatusConfig,
+    //     logger ?: LoggerConfig,
+    //     swagger ?: SwaggerConfig,
+    //
+    //     // other values may also be present in config
+    //     [index: string]: any
+    // }
 
-        // other values may also be present in config
-        [index: string]: any
-    }
+    // export interface HttpConfig {
+    //     port: number
+    // }
 
-    export interface HttpConfig {
-        port: number
-    }
+    // export interface AuthorizationConfig {
+    //     endpoint: string
+    // }
 
-    export interface AuthorizationConfig {
-        endpoint: string
-    }
+    // export interface MetricsConfig {
+    //     host: string,
+    //     port: number,
+    //     prefix: string
+    // }
 
-    export interface MetricsConfig {
-        host: string,
-        port: number,
-        prefix: string
-    }
+    // export interface ContextConfig {
+    //     rabbitmq ?: RabbitMQContextConfig
+    // }
 
-    export interface ContextConfig {
-        rabbitmq ?: RabbitMQContextConfig
-    }
-
-    export interface RabbitMQContextConfig {
-        host: string
-    }
+    // export interface RabbitMQContextConfig {
+    //     host: string
+    // }
 
     export interface StatusConfig {
         port: number,
@@ -109,9 +109,9 @@ declare module "@convenior/microservice-toolkit" {
         }
     }
 
-    export interface LoggerConfig {
-        module: string
-    }
+    // export interface LoggerConfig {
+    //     module: string
+    // }
 
     export interface SwaggerConfig {
         docPath: string,

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "declaration": true,
+    "outDir": "./dist",
+    "types": ["mocha"],
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "lib": [
+      "es6"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ],
+  "files": [
+    "node_modules/@types/node/index.d.ts"
+  ]
+}
