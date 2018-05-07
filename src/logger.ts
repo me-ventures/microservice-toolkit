@@ -1,10 +1,12 @@
+import { Logger } from "./index";
+
 const logger = require('./logger/console-logger');
 const metrics = require('./metrics');
 
 let instance;
 
 
-export function init(config ?: LoggerConfig) {
+export function init(config ?: LoggerConfig): Logger {
     var moduleName;
 
     if( config ){
@@ -30,42 +32,42 @@ export function init(config ?: LoggerConfig) {
     };
 }
 
-function emerg(message) {
+export function emerg(message) {
     metrics.increment('log.emerg');
     instance.emerg(message);
 }
 
-function alert(message) {
+export function alert(message) {
     metrics.increment('log.alert');
     instance.alert(message);
 }
 
-function crit(message) {
+export function crit(message) {
     metrics.increment('log.crit');
     instance.crit(message);
 }
 
-function error(message) {
+export function error(message) {
     metrics.increment('log.error');
     instance.error(message);
 }
 
-function warning(message) {
+export function warning(message) {
     metrics.increment('log.warning');
     instance.warning(message);
 }
 
-function notice(message) {
+export function notice(message) {
     metrics.increment('log.notice');
     instance.notice(message);
 }
 
-function info(message) {
+export function info(message) {
     metrics.increment('log.info');
     instance.info(message);
 }
 
-function debug(message) {
+export function debug(message) {
     metrics.increment('log.debug');
     instance.debug(message);
 }

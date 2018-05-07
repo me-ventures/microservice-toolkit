@@ -1,21 +1,16 @@
-module.exports = {
-    init: init,
-    shutdown: shutdown,
-    getProvider: getProvider
-};
-
 var express = require('express');
 var app = express();
 var log = require('winston');
 var httpEndpoint;
 
-var provider = require('./provider');
+import * as routes from "./routes";
+import * as provider from "./provider/index";
 
-function getProvider(){
+export function getProvider(){
     return provider;
 }
 
-function init( statusConfig, fullConfig ){
+export function init( statusConfig ?: StatusConfig|any, fullConfig ?: any ){
     statusConfig = statusConfig || {};
     statusConfig.port = statusConfig.port || 11111;
 
@@ -32,15 +27,20 @@ function init( statusConfig, fullConfig ){
     initHttpEndpoint(statusConfig);
 }
 
-function shutdown(){
+export function shutdown(){
     httpEndpoint.close();
 }
 
-function initHttpEndpoint( config ){
+export function initHttpEndpoint( config ){
     httpEndpoint = app.listen(config.port);
-    app.use('/', require('./routes'));
+    app.use('/', routes.getRouter());
 }
 
-
+export interface StatusConfig {
+    port: number,
+    service: {
+        name: string
+    }
+}
 
 

@@ -5,7 +5,7 @@ var log = require('winston');
 var moment = require('moment');
 var metrics = require('./metrics');
 var uuid = require('uuid');
-var statusProvider = require('./status').getProvider();
+var statusProvider = require('./status/index').getProvider();
 
 
 var correlationStore = {};

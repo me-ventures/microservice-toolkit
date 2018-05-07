@@ -1,15 +1,16 @@
 var chai = require('chai');
 var assert = chai.assert;
 var sinon = require('sinon');
-
 var request = require('request');
 
+import * as status from "../../../src/status/index";
+import * as statusProvider from "../../../src/status/provider/index";
 
 describe('routes', function(){
     beforeEach(function(){
         this.sandbox = sinon.sandbox.create();
-        this.sandbox.sut = require('../../../src/status/index');
-        this.sandbox.provider = require('../../../src/status/provider/index');
+        this.sandbox.sut = status;
+        this.sandbox.provider = statusProvider;
     });
 
     afterEach(function(){
@@ -68,7 +69,8 @@ describe('routes', function(){
                     events: {
                         consume: [],
                         publish: []
-                    }
+                    },
+                    httpEndpoints: [],
                 });
 
                 done();
@@ -118,7 +120,8 @@ describe('routes', function(){
                                 schema: ''
                             }
                         ]
-                    }
+                    },
+                    httpEndpoints: [],
                 });
 
                 done();
@@ -173,7 +176,8 @@ describe('routes', function(){
                                 }
                             }
                         ]
-                    }
+                    },
+                    httpEndpoints: [],
                 });
 
                 done();
@@ -191,7 +195,7 @@ describe('routes', function(){
                 'test-event-2'
             );
 
-            let exampleEvent = {
+            let exampleEvent: any = {
                 hello: 'world',
                 this_is: {
                     some: 'data'
@@ -241,7 +245,8 @@ describe('routes', function(){
                                 }
                             }
                         ]
-                    }
+                    },
+                    httpEndpoints: [],
                 });
 
                 done();
@@ -331,7 +336,8 @@ describe('routes', function(){
                             }
                         ],
                         publish: []
-                    }
+                    },
+                    httpEndpoints: [],
                 });
 
                 done();
@@ -349,7 +355,7 @@ describe('routes', function(){
                 'test-event-2'
             );
 
-            let exampleEvent = {
+            let exampleEvent: any = {
                 hello: 'world',
                 this_is: {
                     some: 'consume data'
@@ -396,7 +402,8 @@ describe('routes', function(){
                             }
                         ],
                         publish: []
-                    }
+                    },
+                    httpEndpoints: [],
                 });
 
                 done();
@@ -469,7 +476,8 @@ describe('routes', function(){
                                 schema: ''
                             }
                         ]
-                    }
+                    },
+                    httpEndpoints: [],
                 });
 
                 done();

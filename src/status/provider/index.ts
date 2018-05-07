@@ -1,34 +1,23 @@
-module.exports = {
-    setServiceInformation: setServiceInformation,
-    addEventConsume: addEventConsume,
-    setEventConsumeExample: setEventConsumeExample,
-    addEventPublish: addEventPublish,
-    setEventPublishExample: setEventPublishExample,
-    setHttpEndpointsFromConfig: setHttpEndpointsFromConfig,
-    getData: getData,
-    reset: reset
-};
-
-
 var data = {
     service: {
-        name: 'test-service'
+        name: 'test-service',
     },
     events: {
         consume: [],
-        publish: []
-    }
+        publish: [],
+    },
+    httpEndpoints: [],
 };
 
 var publishKeyLookup = {};
 var publishExampleKeyLookup = {};
 var consumeExampleKeyLookup = {};
 
-function getData(){
+export function getData(){
     return data;
 }
 
-function reset(){
+export function reset(){
     data = {
         service: {
             name: 'test-service'
@@ -36,7 +25,8 @@ function reset(){
         events: {
             consume: [],
             publish: []
-        }
+        },
+        httpEndpoints: [],
     };
 
     publishKeyLookup = {};
@@ -44,12 +34,12 @@ function reset(){
     consumeExampleKeyLookup = {};
 }
 
-function setServiceInformation( name ){
+export function setServiceInformation( name ){
     data.service.name = name;
 }
 
 let endpoints = {};
-function setHttpEndpointsFromConfig( config ){
+export function setHttpEndpointsFromConfig( config ){
 
     function checkForHttpValue( value ){
         if( value.startsWith('http://') || value.startsWith('https://') ){
@@ -74,7 +64,7 @@ function setHttpEndpointsFromConfig( config ){
     data.httpEndpoints = Object.keys(endpoints);
 }
 
-function addEventConsume( namespace, topic, shared, queueName, schema ){
+export function addEventConsume( namespace, topic, shared, queueName, schema ){
     var event = {
         namespace: namespace,
         topic: topic,
@@ -91,7 +81,7 @@ function addEventConsume( namespace, topic, shared, queueName, schema ){
     };
 }
 
-function setEventConsumeExample( namespace, topic, example ){
+export function setEventConsumeExample( namespace, topic, example ){
     var key = namespace + topic;
 
     if( typeof consumeExampleKeyLookup[key] !== 'object' ){
@@ -112,7 +102,7 @@ function setEventConsumeExample( namespace, topic, example ){
     }
 }
 
-function addEventPublish( namespace, topic, schema ){
+export function addEventPublish( namespace, topic, schema ){
     if( ! publishKeyLookup[namespace + topic] ){
         var event = {
             namespace: namespace,
@@ -131,7 +121,7 @@ function addEventPublish( namespace, topic, schema ){
     }
 }
 
-function setEventPublishExample( namespace, topic, example ){
+export function setEventPublishExample( namespace, topic, example ){
     var key = namespace + topic;
 
     if( typeof publishExampleKeyLookup[key] !== 'object' ){

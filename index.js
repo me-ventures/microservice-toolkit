@@ -8,7 +8,7 @@ module.exports = {
     http: require('./src/http'),
     metrics: require('./src/metrics'),
     context: require('./src/context'),
-    status: require('./src/status'),
+    status: require('./src/status/index'),
     logger: require('./src/logger')
 };
 
@@ -53,7 +53,7 @@ function initFromConfig( config ){
                 break;
 
             case 'status':
-                require('./src/status').init(option, config);
+                require('./src/status/index').init(option, config);
                 break;
 
             case 'logger':
