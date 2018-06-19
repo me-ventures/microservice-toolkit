@@ -11,7 +11,10 @@ export function init(config ?: LoggerConfig): Logger {
 
     if( config ){
         moduleName = config.module;
-        setHandlers(config.unhandledExceptionHandler, config.enableUnhandledRejectionHandler);
+        enableDefaultHandlers(
+            config.enableUnhandledExceptionHandler,
+            config.enableUnhandledRejectionHandler
+        );
     } else {
         moduleName = 'default-unnamed-module';
     }
@@ -28,7 +31,7 @@ export function init(config ?: LoggerConfig): Logger {
         warning: warning,
         notice: notice,
         info: info,
-        debug: debug
+        debug: debug,
     };
 }
 
@@ -78,7 +81,7 @@ export function debug(message) {
  * @param enableException boolean
  * @param enableUnhandled boolean
  */
-function setHandlers(enableException, enableUnhandled) {
+function enableDefaultHandlers(enableException, enableUnhandled) {
     if(enableException === true) {
         process.on('uncaughtException', UncaughtExceptionHandler);
     }
@@ -112,6 +115,6 @@ function unhandledRejectionHandler(error) {
 export interface LoggerConfig {
     module: string;
 
-    unhandledExceptionHandler ?: boolean;
+    enableUnhandledExceptionHandler ?: boolean;
     enableUnhandledRejectionHandler ?: boolean;
 }
