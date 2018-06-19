@@ -97,7 +97,7 @@ describe('logger module', function(){
 
                     const call2Args = critSpy.getCall(1).args;
                     assert.equal(call2Args[0], "crit");
-                    assert.isTrue(call2Args[1].includes("/test/unit/logger/logger-test.ts"));
+                    assert.isTrue(call2Args[1].includes("/test/unit/logger/logger-test"));
 
                     return resolve();
                 }
@@ -137,7 +137,7 @@ describe('logger module', function(){
 
                     const call2Args = critSpy.getCall(1).args;
                     assert.equal(call2Args[0], "crit");
-                    assert.isTrue(call2Args[1].includes("/test/unit/logger/logger-test.ts"));
+                    assert.isTrue(call2Args[1].includes("/test/unit/logger/logger-test"));
 
                     return resolve();
                 }
