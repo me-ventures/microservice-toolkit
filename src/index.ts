@@ -79,7 +79,7 @@ export function initFromConfig( config: Config ){
                         );
                 }
 
-                require('./src/http').enableSwagger(swaggerDoc, config.swagger);
+                http.enableSwagger(swaggerDoc, config.swagger);
                 break;
         }
     }
