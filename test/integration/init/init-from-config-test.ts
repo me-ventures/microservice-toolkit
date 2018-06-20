@@ -1,38 +1,38 @@
 var assert = require('chai').assert;
-var sut = require('../../../index');
+import * as toolkit from "../../../src/index";
 var fs = require('fs');
 var request = require('request');
 var nock = require('nock');
 
+const sut = toolkit.initFromConfig({
+    "name": "public-product-frontend-layer",
+    "http": {
+        "port": 8000
+    },
+    "metrics": {
+        "host": "localhost",
+        "port": 8125,
+        "prefix": "public-product-frontend-layer"
+    },
+    "context": {
+        "rabbitmq": {
+            "host": "localhost"
+        }
+    },
+    "status": {
+        "service": {
+            "name": "test-service"
+        },
+        "port": 10088
+    },
+    "logger": {
+        "module": "public-product-frontend-layer"
+    }
+});
+
 describe('toolkit.initFromConfig', function(){
     it('should initialize all components present in supplied config', function(done){
-        this.timeout = 10000;
-
-        sut.initFromConfig({
-            "name": "public-product-frontend-layer",
-            "http": {
-                "port": 8000
-            },
-            "metrics": {
-                "host": "localhost",
-                "port": 8125,
-                "prefix": "public-product-frontend-layer"
-            },
-            "context": {
-                "rabbitmq": {
-                    "host": "localhost"
-                }
-            },
-            "status": {
-                "service": {
-                    "name": "test-service"
-                },
-                "port": 10088
-            },
-            "logger": {
-                "module": "public-product-frontend-layer"
-            }
-        });
+        this.timeout(10000);
 
         sut.http.addRouter('/test', function(req,res,next){
             res.json({hello: 'world'});
@@ -49,7 +49,7 @@ describe('toolkit.initFromConfig', function(){
     });
 
     it('should initialize swagger when present in config', function(done){
-        this.timeout = 10000;
+        this.timeout(10000);
 
         sut.initFromConfig({
             "name": "public-product-frontend-layer",
@@ -57,9 +57,9 @@ describe('toolkit.initFromConfig', function(){
                 "port": 9000
             },
             "swagger": {
-                docPath: __dirname + '/../http/swagger-test/swagger.json',
+                docPath: __dirname + '/../../unit/http/swagger-test/swagger.json',
                 swaggerUi: '/swagger.json',
-                controllers: __dirname + '/../http/swagger-test',
+                controllers: __dirname + '/../../unit/http/swagger-test',
                 useStubs: false
             }
         });
@@ -75,7 +75,7 @@ describe('toolkit.initFromConfig', function(){
     });
 
     it('should initialize permissions functionality when present in config', function(done){
-        this.timeout = 10000;
+        this.timeout(10000);
 
         var authEndpoint1 = nock('http://authorization')
             .get('/v1/user/123/hasPermission/test-operation')
