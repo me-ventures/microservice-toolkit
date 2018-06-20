@@ -5,8 +5,8 @@
   "main": "index.js",
   "types": "./index.d.ts",
   "scripts": {
-    "test": "./node_modules/.bin/tsc && ./node_modules/.bin/mocha --recursive dist/test/unit",
-    "test-all": "./node_modules/.bin/tsc && ./node_modules/.bin/mocha --recursive dist/test/",
+    "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register test/unit/**/*.ts",
+    "test-integration": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register test/integration/**/*.ts",
     "live-dev": "./node_modules/.bin/tsc --watch"
   },
   "repository": {

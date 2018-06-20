@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-const _context = require('../../src/context').init({
+const _context = require('../../../src/context').init({
     "rabbitmq": {
         "host": "localhost"
     }
