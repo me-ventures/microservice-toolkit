@@ -4,11 +4,11 @@ module.exports = {
      */
     init: init,
     initFromConfig: initFromConfig,
-    authorization: require('./src/authorizaion'),
+    authorization: require('./src/authorizaion/index'),
     http: require('./src/http'),
     metrics: require('./src/metrics'),
     context: require('./src/context'),
-    status: require('./src/status'),
+    status: require('./src/status/index'),
     logger: require('./src/logger')
 };
 
@@ -37,7 +37,7 @@ function initFromConfig( config ){
 
         switch( key ){
             case 'authorization':
-                require('./src/authorizaion').init(option.endpoint);
+                require('./src/authorizaion/index').init(option.endpoint);
                 break;
 
             case 'http':
@@ -53,7 +53,7 @@ function initFromConfig( config ){
                 break;
 
             case 'status':
-                require('./src/status').init(option, config);
+                require('./src/status/index').init(option, config);
                 break;
 
             case 'logger':

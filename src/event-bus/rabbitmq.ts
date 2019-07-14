@@ -1,20 +1,14 @@
-module.exports = {
-    init: init,
-    connectExchange: connectExchange,
-    connectExchangeSharedQueue: connectExchangeSharedQueue,
-    publishToExchange: publishToExchange,
-    acknowledge: acknowledge
-};
+import {isNullOrUndefined} from "util";
 
 
-var rabbitmq = require('amqplib');
-var log = require('winston');
+const rabbitmq = require('amqplib');
+const log = require('winston');
 
-var open;
-var channel;
+let open;
+let channel;
 
 
-function init( config ){
+export function init( config: RabbitMQContextConfig ){
     open = rabbitmq.connect('amqp://' + config.host)
         .then(x => x,
             error => {
@@ -27,7 +21,7 @@ function init( config ){
     return module.exports;
 }
 
-function connectExchange(name, topics, handler) {
+export function connectExchange(name, topics, handler) {
 
     if(Array.isArray(topics) === false) {
         throw { message: "Topics should be array."}
@@ -57,7 +51,7 @@ function connectExchange(name, topics, handler) {
         } )
 }
 
-function connectExchangeSharedQueue(name, topics, queueName, handler, options) {
+export function connectExchangeSharedQueue(name, topics, queueName, handler, options) {
     if(Array.isArray(topics) === false) {
         throw { message: "Topics should be array."}
     }
@@ -93,9 +87,8 @@ function connectExchangeSharedQueue(name, topics, queueName, handler, options) {
         } )
 }
 
-function publishToExchange(name, key, message) {
-
-    if ( message == undefined ) {
+export function publishToExchange(name, key, message) {
+    if ( isNullOrUndefined(message) ) {
         throw new Error(
             `attempted to publish undefined message on exchange [${name}] [${key}]`
         );
@@ -107,8 +100,13 @@ function publishToExchange(name, key, message) {
     }).catch(console.warn);
 }
 
-function acknowledge(message) {
+export function acknowledge(message) {
     channel.then(channel => {
         channel.ack(message)
     })
+}
+
+
+export interface RabbitMQContextConfig {
+    host: string
 }

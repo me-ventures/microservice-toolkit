@@ -1,11 +1,7 @@
-module.exports = {
-    init: init,
-};
-
 var winston = require('winston');
 var moment = require('moment');
 
-function init( module ){
+export function init( module ){
     var instance = new winston.Logger({
         transports: [new winston.transports.Console({
             label: getLabel(module),

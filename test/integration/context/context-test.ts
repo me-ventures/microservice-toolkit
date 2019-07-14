@@ -1,5 +1,5 @@
 var assert = require('chai').assert;
-var context = require('./../../src/context').init({
+const _context = require('../../../src/context').init({
     "rabbitmq": {
         "host": "localhost"
     }
@@ -10,7 +10,7 @@ describe("Context Integration test", function(){
         it("Should create durable task queue when shared queue is used", function(done){
             var task1Received = 0;
 
-            context.consumeShared("Test-Exchange", ["none"], "integration-test-none", function(message) {
+            _context.consumeShared("Test-Exchange", ["none"], "integration-test-none", function(message) {
                 // Do some test
 
                 task1Received++;
@@ -18,7 +18,7 @@ describe("Context Integration test", function(){
                 return Promise.resolve(message)
             });
 
-            context.publishToExchange("Test-Exchange", "none", { 'hello': "world" });
+            _context.publishToExchange("Test-Exchange", "none", { 'hello': "world" });
 
             setTimeout(function(){
                 assert.equal(task1Received, 1);
@@ -32,7 +32,7 @@ describe("Context Integration test", function(){
             var task1Received = 0;
             var task2Received = 0;
 
-            context.consumeShared("Test-Exchange2", ["none"], "integration-test-none2", function(message) {
+            _context.consumeShared("Test-Exchange2", ["none"], "integration-test-none2", function(message) {
                 // Do some test
 
                 task1Received++;
@@ -40,7 +40,7 @@ describe("Context Integration test", function(){
                 return Promise.resolve(message)
             });
 
-            context.consumeShared("Test-Exchange2", ["none"], "integration-test-none2", function(message) {
+            _context.consumeShared("Test-Exchange2", ["none"], "integration-test-none2", function(message) {
                 // Do some test
 
                 task2Received++;
@@ -50,8 +50,8 @@ describe("Context Integration test", function(){
 
 
             setTimeout(function(){
-                context.publishToExchange("Test-Exchange2", "none", { 'hello': "world" });
-                context.publishToExchange("Test-Exchange2", "none", { 'hello': "world" });
+                _context.publishToExchange("Test-Exchange2", "none", { 'hello': "world" });
+                _context.publishToExchange("Test-Exchange2", "none", { 'hello': "world" });
             }, 250);
 
 

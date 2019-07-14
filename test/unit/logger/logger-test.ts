@@ -1,12 +1,13 @@
 const chai = require('chai');
 const assert = chai.assert;
 const sinon = require('sinon');
-const sut = require('../../../src/logger');
+const logger = require('../../../src/logger');
+import * as process from "process";
 
 
 describe('logger module', function(){
     before(function(){
-        sut.init({
+        logger.init({
             module: 'tester-module'
         });
     });
@@ -17,49 +18,49 @@ describe('logger module', function(){
     });
 
     it('should log error strings to console', function(){
-        sut.error('this is a test error');
+        logger.error('this is a test error');
 
-        assert.isTrue(process.stderr.write.calledOnce);
-        assert.isTrue(process.stderr.write.calledWithMatch(
+        assert.isTrue((process.stderr.write as any).calledOnce);
+        assert.isTrue((process.stderr.write as any).calledWithMatch(
             'this is a test error'
         ));
     });
 
     it('should log error objects with a message property to console', function(){
-        sut.error({
+        logger.error({
             message: 'this is a test error from an object'
         });
 
-        assert.isTrue(process.stderr.write.calledOnce);
-        assert.isTrue(process.stderr.write.calledWithMatch(
+        assert.isTrue((process.stderr.write as any).calledOnce);
+        assert.isTrue((process.stderr.write as any).calledWithMatch(
             'this is a test error from an object'
         ));
     });
 
     it('should log info strings to console', function(){
-        sut.info('this is a info message');
+        logger.info('this is a info message');
 
-        assert.isTrue(process.stdout.write.calledOnce);
-        assert.isTrue(process.stdout.write.calledWithMatch(
+        assert.isTrue((process.stdout.write as any).calledOnce);
+        assert.isTrue((process.stdout.write as any).calledWithMatch(
             'this is a info message'
         ));
     });
 
     it('should log info objects with a message property to console', function(){
-        sut.info({
+        logger.info({
             message: 'this is a info message from an object'
         });
 
-        assert.isTrue(process.stdout.write.calledOnce);
-        assert.isTrue(process.stdout.write.calledWithMatch(
+        assert.isTrue((process.stdout.write as any).calledOnce);
+        assert.isTrue((process.stdout.write as any).calledWithMatch(
             'this is a info message from an object'
         ));
     });
 
     it('should init with default settings with no config.logger passed', function(){
-        sut.init(undefined);
+        logger.init(undefined);
 
-        assert.typeOf(sut, 'object');
+        assert.typeOf(logger, 'object');
 
     });
 
@@ -67,12 +68,16 @@ describe('logger module', function(){
         return new Promise((resolve,reject) => {
             var mochaListener = process.listeners('uncaughtException').pop();
 
-            sut.init({
-                unhandledExceptionHandler: true
+            const sut = logger.init({
+                module: "test-module",
+                enableUnhandledExceptionHandler: true
             });
 
             var exitStub = sinon.stub(process, 'exit');
-            var critSpy = sinon.spy(sut, 'crit');
+
+            const winston = require("winston");
+            var critSpy = sinon.spy(winston.Logger.prototype, "log");
+
 
             process.removeListener('uncaughtException', mochaListener);
 
@@ -85,10 +90,14 @@ describe('logger module', function(){
                     assert.isTrue(exitStub.calledWith(1));
 
                     assert.equal(critSpy.callCount, 2);
-                    assert.isTrue(critSpy.calledWith("Unhandled exception: test-message"));
 
-                    const critCall2 = critSpy.getCall(1);
-                    assert.isTrue(critCall2.args[0].includes("/test/unit/logger/logger-test.js"));
+                    const call1Args = critSpy.getCall(0).args;
+                    assert.equal(call1Args[0], "crit");
+                    assert.equal(call1Args[1], "Unhandled exception: test-message");
+
+                    const call2Args = critSpy.getCall(1).args;
+                    assert.equal(call2Args[0], "crit");
+                    assert.isTrue(call2Args[1].includes("/test/unit/logger/logger-test"));
 
                     return resolve();
                 }
@@ -107,23 +116,28 @@ describe('logger module', function(){
 
     it('should set unhandled rejection handler when initialized with enableUnhandledRejectionHandler set to true', async function(){
         return new Promise((resolve, reject) => {
-            sut.init({
+            logger.init({
+                module: "test-module",
                 enableUnhandledRejectionHandler: true
             });
 
-            const critSpy = sinon.spy(sut, 'crit');
+            const winston = require("winston");
+            var critSpy = sinon.spy(winston.Logger.prototype, "log");
 
-            process.emit('unhandledRejection', new Error("Error: test rejection"));
+            process.emit('unhandledRejection' as any, new Error("Error: test rejection"));
 
             setTimeout(() => {
                 try {
                     assert.equal(critSpy.callCount, 2);
 
-                    const critCall1 = critSpy.getCall(0);
-                    assert.equal(critCall1.args[0], "Unhandled Promise Rejection - reason: [Error: test rejection]");
 
-                    const critCall2 = critSpy.getCall(1);
-                    assert.isTrue(critCall2.args[0].includes("/test/unit/logger/logger-test.js"));
+                    const call1Args = critSpy.getCall(0).args;
+                    assert.equal(call1Args[0], "crit");
+                    assert.equal(call1Args[1], "Unhandled Promise Rejection - reason: [Error: test rejection]");
+
+                    const call2Args = critSpy.getCall(1).args;
+                    assert.equal(call2Args[0], "crit");
+                    assert.isTrue(call2Args[1].includes("/test/unit/logger/logger-test"));
 
                     return resolve();
                 }
@@ -141,7 +155,7 @@ describe('logger module', function(){
     });
 
     it('should not set handlers when initialized without enableUnhandledRejectionHandler and unhandledExceptionHandler set', function(){
-        sut.init(undefined);
+        logger.init(undefined);
 
         var mochaListener = process.listeners('unhandledRejection');
 
@@ -150,7 +164,7 @@ describe('logger module', function(){
     });
 
     afterEach(function() {
-        process.stdout.write.restore();
-        process.stderr.write.restore();
+        (process.stdout.write as any).restore();
+        (process.stderr.write as any).restore();
     });
 });

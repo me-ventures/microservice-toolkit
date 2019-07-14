@@ -1,13 +1,3 @@
-module.exports = {
-    listen: listen,
-    addRouter: addRouter,
-    addMiddleware: addMiddleware,
-    enableSwagger: enableSwagger,
-    getApp: getApp,
-    init: init
-};
-
-
 var express = require('express');
 var morgan = require('morgan');
 var log = require('winston');
@@ -18,12 +8,12 @@ var swaggerTools = require('swagger-tools');
 
 app.use(logResponseCode);
 
-function listen( port ){
+export function listen( port: number ){
     return init({ port: port});
 }
 
-function init(config) {
-    if(config.logOnlyErrors && config.logOnlyErrors === false) {
+export function init( config: HttpConfig ) {
+    if( config.logOnlyErrors && ! config.logOnlyErrors ) {
         app.use(morgan('combined'));
     } else {
         app.use(morgan('combined', {
@@ -36,15 +26,15 @@ function init(config) {
     });
 }
 
-function addRouter( endpointName, route ){
+export function addRouter( endpointName, route ){
     app.use(endpointName, route);
 }
 
-function addMiddleware( middleware ){
+export function addMiddleware( middleware ){
     app.use(middleware);
 }
 
-function enableSwagger( swaggerDoc, options ){
+export function enableSwagger( swaggerDoc, options ){
     swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
         // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
         app.use(middleware.swaggerMetadata());
@@ -68,7 +58,7 @@ function enableSwagger( swaggerDoc, options ){
     });
 }
 
-function logResponseCode(req, res, next) {
+export function logResponseCode(req, res, next) {
     var rEnd = res.end;
 
     // Proxy the real end function
@@ -85,6 +75,12 @@ function logResponseCode(req, res, next) {
     next()
 }
 
-function getApp() {
+export function getApp() {
     return app;
+}
+
+export interface HttpConfig {
+    port: number;
+
+    logOnlyErrors ?: boolean;
 }
