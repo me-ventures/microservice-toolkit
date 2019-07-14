@@ -7,6 +7,8 @@ jobs:
     parallelism: 1
     environment:
     steps:
+      - checkout
+      - setup_remote_docker
       - run:
           name: build site
           command: yarn install && yarn run build
