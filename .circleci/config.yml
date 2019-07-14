@@ -1,17 +1,23 @@
 version: 2
 jobs:
   build:
-    docker:
-      - image: meventures/angular-cli:3.1.0
-    working_directory: /app
+    working_directory: ~/me-ventures/microservice-toolkit
     parallelism: 1
-    environment:
+    shell: /bin/bash --login
+
+    docker:
+      - image: circleci/build-image:ubuntu-14.04-XXL-upstart-1189-5614f37
+        command: /sbin/init
     steps:
       - checkout
-      - setup_remote_docker
+      - run:
+            working_directory: ~/me-ventures/microservice-toolkit
+            command: nvm install 8.9 && nvm alias default 8.9
+      - run: if [ -z "${NODE_ENV:-}" ]; then export NODE_ENV=test; fi
+      - run: export PATH="~/me-ventures/microservice-toolkit/node_modules/.bin:$PATH"
       - run:
           name: build site
-          command: yarn install && yarn run build
+          command: yarn install
       - run:
-          name: run tests
+          name: test site
           command: yarn run test
