@@ -13,13 +13,15 @@ describe('swagger', function(){
             useStubs: false
         });
 
-        sut.listen(10099);
+        const server = sut.listen(10099);
 
         request('http://localhost:10099/v1/me', function(err, res, body){
             body = JSON.parse(body);
 
             assert.equal(res.statusCode, 200);
             assert.equal(body.hello, 'world');
+
+            server.close();
 
             done();
         });

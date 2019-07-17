@@ -21,7 +21,7 @@ export function init( config: HttpConfig ) {
         }));
     }
 
-    app.listen(config.port, function () {
+    return app.listen(config.port, function () {
         log.info('Listening on port ' + config.port);
     });
 }
