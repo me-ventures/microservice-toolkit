@@ -11,7 +11,7 @@ jobs:
       - checkout
       - run:
             working_directory: ~/me-ventures/microservice-toolkit
-            command: nvm install 8.9 && nvm alias default 8.9
+            command: nvm install 10 && nvm alias default 10
       - run: if [ -z "${NODE_ENV:-}" ]; then export NODE_ENV=test; fi
       - run: export PATH="~/me-ventures/microservice-toolkit/node_modules/.bin:$PATH"
       - run:
