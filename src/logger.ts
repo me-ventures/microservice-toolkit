@@ -1,7 +1,7 @@
 import { Logger } from "./index";
 
-const logger = require('./logger/console-logger');
-const metrics = require('./metrics');
+import * as consoleLogger from "./logger/console-logger";
+import * as metrics from "./metrics";
 
 let instance;
 
@@ -19,7 +19,7 @@ export function init(config ?: LoggerConfig): Logger {
         moduleName = 'default-unnamed-module';
     }
 
-    instance = logger.init(moduleName);
+    instance = consoleLogger.init(moduleName);
 
     // for legacy functionality
     return {
