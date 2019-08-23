@@ -1,8 +1,8 @@
 {
   "name": "@convenior/microservice-toolkit",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "a toolkit for microservices",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "files": [
     "dist"
