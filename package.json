@@ -1,11 +1,12 @@
 {
   "name": "@convenior/microservice-toolkit",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "a toolkit for microservices",
   "main": "dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register test/unit/**/*.ts",
