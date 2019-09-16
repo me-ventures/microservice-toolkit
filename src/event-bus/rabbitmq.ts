@@ -1,14 +1,30 @@
 import {isNullOrUndefined} from "util";
 
 
-const rabbitmq = require('amqplib');
+import * as rabbitmq from "amqplib";
+import { Channel, Options } from "amqplib";
+import * as Bluebird from "bluebird";
 const log = require('winston');
 
-let open;
-let channel;
+let open !: Bluebird<void|rabbitmq.Connection>;
+let channel !: Bluebird<Channel>;
+
+let defaultPublishOptions !: Options.Publish;
+let defaultConsumeOptions: Options.Consume|undefined;
 
 
 export function init( config: RabbitMQContextConfig ){
+    // optionally set default publish options
+    if ( config.defaultPublishOptions ) {
+        defaultPublishOptions = config.defaultPublishOptions;
+    } else {
+        defaultPublishOptions = {
+            persistent: true,
+        };
+    }
+
+    defaultConsumeOptions = config.defaultConsumeOptions;
+
     open = rabbitmq.connect('amqp://' + config.host)
         .then(x => x,
             error => {
@@ -16,20 +32,25 @@ export function init( config: RabbitMQContextConfig ){
                 process.exit(1);
             });
 
-    channel = open.then(connection => connection.createChannel());
+    channel = open.then((connection: rabbitmq.Connection)  => connection.createChannel());
 
     return module.exports;
 }
 
-export function connectExchange(name, topics, handler) {
+export function connectExchange(
+    name: string,
+    topics: string[],
+    handler: (msg: rabbitmq.ConsumeMessage) => any,
+    consumeOptions ?: Options.Consume
+) {
 
     if(Array.isArray(topics) === false) {
         throw { message: "Topics should be array."}
     }
 
     channel
-        .then(chan => {
-            chan.assertExchange(name, 'direct', {durable: true});
+        .then(async chan => {
+            await chan.assertExchange(name, 'direct', {durable: true});
 
             return chan.assertQueue('', {exclusive: true})
                 .then(q => {
@@ -39,32 +60,43 @@ export function connectExchange(name, topics, handler) {
                     };
                 });
         })
-        .then(object => {
-            topics.forEach(routingKey => {
-                object.channel.bindQueue(object.queue.queue, name, routingKey)
-            });
+        .then(async object => {
+            for (const routingKey of topics) {
+                await object.channel.bindQueue(object.queue.queue, name, routingKey);
+            }
 
-            object.channel.consume(object.queue.queue, handler)
+            await object.channel.consume(
+                object.queue.queue,
+                handler,
+                consumeOptions || defaultConsumeOptions
+            );
         })
         .catch(x => {
             log.error(x)
         } )
 }
 
-export function connectExchangeSharedQueue(name, topics, queueName, handler, options) {
+export function connectExchangeSharedQueue(
+    name: string,
+    topics: string[],
+    queueName: string,
+    handler: (msg: rabbitmq.ConsumeMessage) => any,
+    options: { prefetch ?: number },
+    consumeOptions: Options.Consume
+) {
     if(Array.isArray(topics) === false) {
         throw { message: "Topics should be array."}
     }
 
     channel
-        .then(chan => {
-            chan.assertExchange(name, 'direct', {durable: true});
+        .then(async chan => {
+            await chan.assertExchange(name, 'direct', {durable: true});
 
             if(options.prefetch) {
-                chan.prefetch(options.prefetch);
+                await chan.prefetch(options.prefetch);
             }
             else {
-                chan.prefetch(1);
+                await chan.prefetch(1);
             }
 
             return chan.assertQueue(queueName, {durable: true})
@@ -75,29 +107,44 @@ export function connectExchangeSharedQueue(name, topics, queueName, handler, opt
                     };
                 });
         })
-        .then(object => {
-            topics.forEach(routingKey => {
-                object.channel.bindQueue(object.queue.queue, name, routingKey)
-            });
+        .then(async object => {
+            for (const routingKey of topics) {
+                await object.channel.bindQueue(object.queue.queue, name, routingKey);
+            }
 
-            object.channel.consume(object.queue.queue, handler)
+            await object.channel.consume(
+                object.queue.queue,
+                handler,
+                consumeOptions || defaultConsumeOptions
+            );
         })
         .catch(x => {
             log.error(x)
         } )
 }
 
-export function publishToExchange(name, key, message) {
+export function publishToExchange(
+    name: string,
+    key: string,
+    message: object,
+    options ?: Options.Publish
+) {
     if ( isNullOrUndefined(message) ) {
         throw new Error(
             `attempted to publish undefined message on exchange [${name}] [${key}]`
         );
     }
 
-    channel.then(function(channel) {
-        channel.assertExchange(name, 'direct', {durable: true});
-        return channel.publish(name, key, new Buffer(JSON.stringify(message)))
-    }).catch(console.warn);
+    channel.then(async function(ch) {
+        await ch.assertExchange(name, 'direct', {durable: true});
+
+        return ch.publish(
+            name,
+            key,
+            Buffer.from(JSON.stringify(message)),
+            options || defaultPublishOptions
+        );
+    }).catch(log.warn);
 }
 
 export function acknowledge(message) {
@@ -108,5 +155,7 @@ export function acknowledge(message) {
 
 
 export interface RabbitMQContextConfig {
-    host: string
+    host: string,
+    defaultPublishOptions ?: Options.Publish,
+    defaultConsumeOptions ?: Options.Consume,
 }
