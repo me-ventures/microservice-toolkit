@@ -1,6 +1,6 @@
 {
   "name": "@convenior/microservice-toolkit",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "a toolkit for microservices",
   "main": "dist/src/index.js",
   "types": "./dist/src/index.d.ts",
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/me-ventures/microservice-toolkit#readme",
   "dependencies": {
+    "@types/amqplib": "^0.5.13",
     "amqplib": "^0.5.1",
     "config": "^1.20.1",
     "express": "^4.13.4",
@@ -42,7 +43,6 @@
     "winston": "^2.2.0"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.5.13",
     "@types/bluebird": "^3.5.27",
     "@types/chai": "^4.1.3",
     "@types/mocha": "^5.2.7",
