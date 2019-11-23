@@ -103,13 +103,14 @@ function UncaughtExceptionHandler(error) {
 }
 
 /**
- * Handler for the unhandledRejection event. Will print out a warning message using the log system.
+ * Handler for the unhandledRejection event. Will print out a warning message using the log system & call process.exit
  */
 function unhandledRejectionHandler(error) {
     let reasonString = error.message || error.msg || JSON.stringify(error);
 
     crit(`Unhandled Promise Rejection - reason: [${reasonString}]`);
     crit(error.stack.toString());
+    process.exit(1);
 }
 
 export interface LoggerConfig {
