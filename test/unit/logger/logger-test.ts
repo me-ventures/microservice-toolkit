@@ -121,15 +121,18 @@ describe('logger module', function(){
                 enableUnhandledRejectionHandler: true
             });
 
+            const exitStub = sinon.stub(process, 'exit');
+
             const winston = require("winston");
-            var critSpy = sinon.spy(winston.Logger.prototype, "log");
+            const critSpy = sinon.spy(winston.Logger.prototype, "log");
 
             process.emit('unhandledRejection' as any, new Error("Error: test rejection"));
 
             setTimeout(() => {
                 try {
-                    assert.equal(critSpy.callCount, 2);
+                    assert.isTrue(exitStub.calledWith(1));
 
+                    assert.equal(critSpy.callCount, 2);
 
                     const call1Args = critSpy.getCall(0).args;
                     assert.equal(call1Args[0], "crit");
@@ -148,6 +151,7 @@ describe('logger module', function(){
 
                 finally {
                     critSpy.restore();
+                    exitStub.restore();
                 }
 
             }, 125)
