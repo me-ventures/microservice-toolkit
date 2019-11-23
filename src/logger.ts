@@ -15,8 +15,16 @@ export function init(config ?: LoggerConfig): Logger {
             config.enableUnhandledExceptionHandler,
             config.enableUnhandledRejectionHandler
         );
-    } else {
+    }
+
+    // no config supplied - give defaults
+    else {
         moduleName = 'default-unnamed-module';
+
+        enableDefaultHandlers(
+            true,
+            true
+        );
     }
 
     instance = consoleLogger.init(moduleName);
@@ -79,14 +87,17 @@ export function debug(message) {
  * Set handlers for the uncaughtException and unhandledRejection events in nodejs.
  *
  * @param enableException boolean
- * @param enableUnhandled boolean
+ * @param enableUnhandledRej boolean
  */
-function enableDefaultHandlers(enableException, enableUnhandled) {
-    if(enableException === true) {
+function enableDefaultHandlers(
+    enableException ?: boolean,
+    enableUnhandledRej ?: boolean
+) {
+    if( enableException !== false ) {
         process.on('uncaughtException', UncaughtExceptionHandler);
     }
 
-    if(enableUnhandled === true) {
+    if( enableUnhandledRej !== false ) {
         process.on('unhandledRejection', unhandledRejectionHandler);
     }
 }
